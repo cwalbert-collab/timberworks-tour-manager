@@ -5,6 +5,7 @@ import Papa from 'papaparse';
 export const CSV_COLUMNS = [
   'id',
   'tour',
+  'status',
   'venueName',
   'address',
   'city',
@@ -29,6 +30,7 @@ export const CSV_COLUMNS = [
 export const CSV_HEADERS = {
   id: 'ID',
   tour: 'Tour',
+  status: 'Status',
   venueName: 'Venue Name',
   address: 'Address',
   city: 'City',
@@ -166,6 +168,12 @@ function mapRowToShow(row, index) {
     }
   }
 
+  // Parse and validate status
+  let status = normalizedRow.status?.trim()?.toLowerCase() || 'confirmed';
+  if (!['completed', 'confirmed', 'tentative'].includes(status)) {
+    status = 'confirmed'; // Default to confirmed
+  }
+
   // Handle dates - support both old showDate and new startDate/endDate
   const startDate = normalizedRow.startDate?.trim() || normalizedRow.showDate?.trim() || '';
   const endDate = normalizedRow.endDate?.trim() || startDate; // Default endDate to startDate
@@ -173,6 +181,7 @@ function mapRowToShow(row, index) {
   return {
     id,
     tour,
+    status,
     venueName,
     address: normalizedRow.address?.trim() || '',
     city,

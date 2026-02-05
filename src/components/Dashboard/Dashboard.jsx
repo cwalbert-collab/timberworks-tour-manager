@@ -1,10 +1,40 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { exportDashboardSummary } from '../../utils/exportUtils';
 import './Dashboard.css';
 
 export default function Dashboard({ shows, contacts = [], venues = [], onNavigateToRevenue, onNavigateToContact }) {
-  // Calculate aggregate metrics
-  const metrics = useMemo(() => {
+  // Get available years from data
+  const availableYears = useMemo(() => {
+    const years = new Set();
+    shows.forEach(s => {
+      const year = new Date(s.startDate).getFullYear();
+      years.add(year);
+    });
+    return Array.from(years).sort((a, b) => b - a); // Most recent first
+  }, [shows]);
+
+  // Default to current year or most recent year with data
+  const currentYear = new Date().getFullYear();
+  const defaultYear = availableYears.includes(currentYear) ? currentYear : availableYears[0] || currentYear;
+  const [selectedYear, setSelectedYear] = useState(defaultYear);
+
+  // Calculate days worked from show durations
+  const calculateDaysWorked = (showList) => {
+    return showList.reduce((sum, s) => {
+      const start = new Date(s.startDate);
+      const end = new Date(s.endDate);
+      const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+      return sum + days;
+    }, 0);
+  };
+
+  // Filter shows by year
+  const showsByYear = useMemo(() => {
+    return shows.filter(s => new Date(s.startDate).getFullYear() === selectedYear);
+  }, [shows, selectedYear]);
+
+  // Calculate aggregate metrics for ALL TIME
+  const allTimeMetrics = useMemo(() => {
     const totalShows = shows.length;
     const totalRevenue = shows.reduce((sum, s) => sum + (s.totalRevenue || 0), 0);
     const totalProfit = shows.reduce((sum, s) => sum + (s.profit || 0), 0);
@@ -12,21 +42,62 @@ export default function Dashboard({ shows, contacts = [], venues = [], onNavigat
     const totalFees = shows.reduce((sum, s) => sum + (s.performanceFee || 0), 0);
     const totalExpenses = shows.reduce((sum, s) => sum + (s.expenses || 0) + (s.materialsUsed || 0), 0);
     const avgProfit = totalShows > 0 ? totalProfit / totalShows : 0;
+    const daysWorked = calculateDaysWorked(shows);
 
-    return { totalShows, totalRevenue, totalProfit, totalMerch, totalFees, totalExpenses, avgProfit };
+    return { totalShows, totalRevenue, totalProfit, totalMerch, totalFees, totalExpenses, avgProfit, daysWorked };
   }, [shows]);
 
-  // Calculate per-team metrics
-  const teamMetrics = useMemo(() => {
+  // Calculate metrics for SELECTED YEAR
+  const yearlyMetrics = useMemo(() => {
+    const totalShows = showsByYear.length;
+    const totalRevenue = showsByYear.reduce((sum, s) => sum + (s.totalRevenue || 0), 0);
+    const totalProfit = showsByYear.reduce((sum, s) => sum + (s.profit || 0), 0);
+    const totalMerch = showsByYear.reduce((sum, s) => sum + (s.merchandiseSales || 0), 0);
+    const totalFees = showsByYear.reduce((sum, s) => sum + (s.performanceFee || 0), 0);
+    const totalExpenses = showsByYear.reduce((sum, s) => sum + (s.expenses || 0) + (s.materialsUsed || 0), 0);
+    const avgProfit = totalShows > 0 ? totalProfit / totalShows : 0;
+    const daysWorked = calculateDaysWorked(showsByYear);
+
+    return { totalShows, totalRevenue, totalProfit, totalMerch, totalFees, totalExpenses, avgProfit, daysWorked };
+  }, [showsByYear]);
+
+  // Calculate per-team metrics for SELECTED YEAR
+  const yearlyTeamMetrics = useMemo(() => {
+    const redTeam = showsByYear.filter(s => s.tour === 'Red Team');
+    const blueTeam = showsByYear.filter(s => s.tour === 'Blue Team');
+
+    const calcTeamStats = (teamShows) => {
+      const showCount = teamShows.length;
+      const revenue = teamShows.reduce((sum, s) => sum + (s.totalRevenue || 0), 0);
+      const profit = teamShows.reduce((sum, s) => sum + (s.profit || 0), 0);
+      const merch = teamShows.reduce((sum, s) => sum + (s.merchandiseSales || 0), 0);
+      const daysWorked = calculateDaysWorked(teamShows);
+      const avgPerShow = showCount > 0 ? profit / showCount : 0;
+      const uniqueVenues = new Set(teamShows.map(s => s.venueId)).size;
+      return { showCount, revenue, profit, merch, daysWorked, avgPerShow, uniqueVenues };
+    };
+
+    return {
+      red: calcTeamStats(redTeam),
+      blue: calcTeamStats(blueTeam)
+    };
+  }, [showsByYear]);
+
+  // Calculate per-team metrics for ALL TIME
+  const allTimeTeamMetrics = useMemo(() => {
     const redTeam = shows.filter(s => s.tour === 'Red Team');
     const blueTeam = shows.filter(s => s.tour === 'Blue Team');
 
-    const calcTeamStats = (teamShows) => ({
-      showCount: teamShows.length,
-      revenue: teamShows.reduce((sum, s) => sum + (s.totalRevenue || 0), 0),
-      profit: teamShows.reduce((sum, s) => sum + (s.profit || 0), 0),
-      merch: teamShows.reduce((sum, s) => sum + (s.merchandiseSales || 0), 0)
-    });
+    const calcTeamStats = (teamShows) => {
+      const showCount = teamShows.length;
+      const revenue = teamShows.reduce((sum, s) => sum + (s.totalRevenue || 0), 0);
+      const profit = teamShows.reduce((sum, s) => sum + (s.profit || 0), 0);
+      const merch = teamShows.reduce((sum, s) => sum + (s.merchandiseSales || 0), 0);
+      const daysWorked = calculateDaysWorked(teamShows);
+      const avgPerShow = showCount > 0 ? profit / showCount : 0;
+      const uniqueVenues = new Set(teamShows.map(s => s.venueId)).size;
+      return { showCount, revenue, profit, merch, daysWorked, avgPerShow, uniqueVenues };
+    };
 
     return {
       red: calcTeamStats(redTeam),
@@ -90,132 +161,44 @@ export default function Dashboard({ shows, contacts = [], venues = [], onNavigat
     return new Date(date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
 
+  // Render team card with all metrics
+  const renderTeamCard = (team, teamData, className) => (
+    <div className={`team-card ${className}`}>
+      <div className="team-card-header">{team}</div>
+      <div className="team-card-stats expanded">
+        <div className="stat-item">
+          <span className="stat-label">Shows</span>
+          <span className="stat-value">{teamData.showCount}</span>
+        </div>
+        <div className="stat-item">
+          <span className="stat-label">Revenue</span>
+          <span className="stat-value">{formatCurrency(teamData.revenue)}</span>
+        </div>
+        <div className="stat-item">
+          <span className="stat-label">Profit</span>
+          <span className="stat-value">{formatCurrency(teamData.profit)}</span>
+        </div>
+        <div className="stat-item">
+          <span className="stat-label">Merch Sales</span>
+          <span className="stat-value">{formatCurrency(teamData.merch)}</span>
+        </div>
+        <div className="stat-item">
+          <span className="stat-label">Days Worked</span>
+          <span className="stat-value">{teamData.daysWorked}</span>
+        </div>
+        <div className="stat-item">
+          <span className="stat-label">Avg Profit/Show</span>
+          <span className="stat-value">{formatCurrency(teamData.avgPerShow)}</span>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="dashboard">
-      {/* Summary Cards */}
-      <section className="summary-cards">
-        <div className="summary-card">
-          <span className="summary-card-title">Total Shows</span>
-          <span className="summary-card-value">{metrics.totalShows}</span>
-        </div>
-        <div
-          className="summary-card clickable"
-          onClick={onNavigateToRevenue}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => e.key === 'Enter' && onNavigateToRevenue?.()}
-          title="Click to view revenue details"
-        >
-          <span className="summary-card-title">Total Revenue</span>
-          <span className="summary-card-value">{formatCurrency(metrics.totalRevenue)}</span>
-          <span className="card-link-hint">View details &rarr;</span>
-        </div>
-        <div className="summary-card">
-          <span className="summary-card-title">Total Profit</span>
-          <span className="summary-card-value highlight">{formatCurrency(metrics.totalProfit)}</span>
-        </div>
-        <div className="summary-card">
-          <span className="summary-card-title">Avg Profit/Show</span>
-          <span className="summary-card-value">{formatCurrency(metrics.avgProfit)}</span>
-        </div>
-      </section>
-
-      {/* Team Breakdown */}
-      <section className="team-breakdown">
-        <div className="team-card red">
-          <div className="team-card-header">Red Team</div>
-          <div className="team-card-stats">
-            <div className="stat-item">
-              <span className="stat-label">Shows</span>
-              <span className="stat-value">{teamMetrics.red.showCount}</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Revenue</span>
-              <span className="stat-value">{formatCurrency(teamMetrics.red.revenue)}</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Profit</span>
-              <span className="stat-value">{formatCurrency(teamMetrics.red.profit)}</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Merch Sales</span>
-              <span className="stat-value">{formatCurrency(teamMetrics.red.merch)}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="team-card blue">
-          <div className="team-card-header">Blue Team</div>
-          <div className="team-card-stats">
-            <div className="stat-item">
-              <span className="stat-label">Shows</span>
-              <span className="stat-value">{teamMetrics.blue.showCount}</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Revenue</span>
-              <span className="stat-value">{formatCurrency(teamMetrics.blue.revenue)}</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Profit</span>
-              <span className="stat-value">{formatCurrency(teamMetrics.blue.profit)}</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Merch Sales</span>
-              <span className="stat-value">{formatCurrency(teamMetrics.blue.merch)}</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Revenue Breakdown */}
-      <section className="revenue-breakdown">
-        <h3>Revenue Breakdown</h3>
-        <div className="breakdown-item">
-          <div className="breakdown-label">
-            <span>Performance Fees</span>
-            <span>{formatCurrency(metrics.totalFees)} ({getPercentage(metrics.totalFees, metrics.totalRevenue)}%)</span>
-          </div>
-          <div className="breakdown-bar-track">
-            <div
-              className="breakdown-bar-fill fees"
-              style={{ width: `${getPercentage(metrics.totalFees, metrics.totalRevenue)}%` }}
-            />
-          </div>
-        </div>
-        <div className="breakdown-item">
-          <div className="breakdown-label">
-            <span>Merchandise</span>
-            <span>{formatCurrency(metrics.totalMerch)} ({getPercentage(metrics.totalMerch, metrics.totalRevenue)}%)</span>
-          </div>
-          <div className="breakdown-bar-track">
-            <div
-              className="breakdown-bar-fill merch"
-              style={{ width: `${getPercentage(metrics.totalMerch, metrics.totalRevenue)}%` }}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Costs Overview */}
-      <section className="costs-overview">
-        <h3>Costs Overview</h3>
-        <div className="costs-row">
-          <div className="cost-item">
-            <span className="cost-label">Total Expenses</span>
-            <span className="cost-value">{formatCurrency(metrics.totalExpenses)}</span>
-          </div>
-          <div className="cost-item">
-            <span className="cost-label">Profit Margin</span>
-            <span className="cost-value highlight">
-              {metrics.totalRevenue > 0 ? Math.round((metrics.totalProfit / metrics.totalRevenue) * 100) : 0}%
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* Follow-up Reminders */}
+      {/* Follow-up Reminders - MOVED TO TOP */}
       {followUpReminders.all.length > 0 && (
-        <section className="follow-up-reminders">
+        <section className="follow-up-reminders priority">
           <h3>
             Follow-up Reminders
             {followUpReminders.overdue.length > 0 && (
@@ -247,6 +230,172 @@ export default function Dashboard({ shows, contacts = [], venues = [], onNavigat
           </div>
         </section>
       )}
+
+      {/* Year Selector Tabs */}
+      <section className="year-selector">
+        <div className="year-tabs">
+          {availableYears.map(year => (
+            <button
+              key={year}
+              className={`year-tab ${selectedYear === year ? 'active' : ''}`}
+              onClick={() => setSelectedYear(year)}
+            >
+              {year}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Yearly Summary Cards */}
+      <section className="summary-section">
+        <h3 className="section-title">{selectedYear} Overview</h3>
+        <div className="summary-cards">
+          <div className="summary-card">
+            <span className="summary-card-title">Shows</span>
+            <span className="summary-card-value">{yearlyMetrics.totalShows}</span>
+          </div>
+          <div
+            className="summary-card clickable"
+            onClick={onNavigateToRevenue}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && onNavigateToRevenue?.()}
+            title="Click to view revenue details"
+          >
+            <span className="summary-card-title">Revenue</span>
+            <span className="summary-card-value">{formatCurrency(yearlyMetrics.totalRevenue)}</span>
+            <span className="card-link-hint">View details &rarr;</span>
+          </div>
+          <div className="summary-card">
+            <span className="summary-card-title">Profit</span>
+            <span className="summary-card-value highlight">{formatCurrency(yearlyMetrics.totalProfit)}</span>
+          </div>
+          <div className="summary-card">
+            <span className="summary-card-title">Days Worked</span>
+            <span className="summary-card-value">{yearlyMetrics.daysWorked}</span>
+          </div>
+          <div className="summary-card">
+            <span className="summary-card-title">Avg Profit/Show</span>
+            <span className="summary-card-value">{formatCurrency(yearlyMetrics.avgProfit)}</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Yearly Team Breakdown */}
+      <section className="team-section">
+        <h3 className="section-title">{selectedYear} Team Breakdown</h3>
+        <div className="team-breakdown">
+          {renderTeamCard('Red Team', yearlyTeamMetrics.red, 'red')}
+          {renderTeamCard('Blue Team', yearlyTeamMetrics.blue, 'blue')}
+        </div>
+      </section>
+
+      {/* All Time Overview */}
+      <section className="all-time-section">
+        <h3 className="section-title">All Time Overview</h3>
+        <div className="summary-cards all-time">
+          <div className="summary-card compact">
+            <span className="summary-card-title">Total Shows</span>
+            <span className="summary-card-value">{allTimeMetrics.totalShows}</span>
+          </div>
+          <div className="summary-card compact">
+            <span className="summary-card-title">Total Revenue</span>
+            <span className="summary-card-value">{formatCurrency(allTimeMetrics.totalRevenue)}</span>
+          </div>
+          <div className="summary-card compact">
+            <span className="summary-card-title">Total Profit</span>
+            <span className="summary-card-value highlight">{formatCurrency(allTimeMetrics.totalProfit)}</span>
+          </div>
+          <div className="summary-card compact">
+            <span className="summary-card-title">Total Days</span>
+            <span className="summary-card-value">{allTimeMetrics.daysWorked}</span>
+          </div>
+        </div>
+
+        {/* All Time Team Comparison */}
+        <div className="team-breakdown compact">
+          <div className="team-card red compact">
+            <div className="team-card-header">Red Team (All Time)</div>
+            <div className="team-card-stats compact-row">
+              <div className="stat-item inline">
+                <span className="stat-label">Shows:</span>
+                <span className="stat-value">{allTimeTeamMetrics.red.showCount}</span>
+              </div>
+              <div className="stat-item inline">
+                <span className="stat-label">Revenue:</span>
+                <span className="stat-value">{formatCurrency(allTimeTeamMetrics.red.revenue)}</span>
+              </div>
+              <div className="stat-item inline">
+                <span className="stat-label">Profit:</span>
+                <span className="stat-value">{formatCurrency(allTimeTeamMetrics.red.profit)}</span>
+              </div>
+            </div>
+          </div>
+          <div className="team-card blue compact">
+            <div className="team-card-header">Blue Team (All Time)</div>
+            <div className="team-card-stats compact-row">
+              <div className="stat-item inline">
+                <span className="stat-label">Shows:</span>
+                <span className="stat-value">{allTimeTeamMetrics.blue.showCount}</span>
+              </div>
+              <div className="stat-item inline">
+                <span className="stat-label">Revenue:</span>
+                <span className="stat-value">{formatCurrency(allTimeTeamMetrics.blue.revenue)}</span>
+              </div>
+              <div className="stat-item inline">
+                <span className="stat-label">Profit:</span>
+                <span className="stat-value">{formatCurrency(allTimeTeamMetrics.blue.profit)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Revenue Breakdown (for selected year) */}
+      <section className="revenue-breakdown">
+        <h3>{selectedYear} Revenue Breakdown</h3>
+        <div className="breakdown-item">
+          <div className="breakdown-label">
+            <span>Performance Fees</span>
+            <span>{formatCurrency(yearlyMetrics.totalFees)} ({getPercentage(yearlyMetrics.totalFees, yearlyMetrics.totalRevenue)}%)</span>
+          </div>
+          <div className="breakdown-bar-track">
+            <div
+              className="breakdown-bar-fill fees"
+              style={{ width: `${getPercentage(yearlyMetrics.totalFees, yearlyMetrics.totalRevenue)}%` }}
+            />
+          </div>
+        </div>
+        <div className="breakdown-item">
+          <div className="breakdown-label">
+            <span>Merchandise</span>
+            <span>{formatCurrency(yearlyMetrics.totalMerch)} ({getPercentage(yearlyMetrics.totalMerch, yearlyMetrics.totalRevenue)}%)</span>
+          </div>
+          <div className="breakdown-bar-track">
+            <div
+              className="breakdown-bar-fill merch"
+              style={{ width: `${getPercentage(yearlyMetrics.totalMerch, yearlyMetrics.totalRevenue)}%` }}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Costs Overview (for selected year) */}
+      <section className="costs-overview">
+        <h3>{selectedYear} Costs Overview</h3>
+        <div className="costs-row">
+          <div className="cost-item">
+            <span className="cost-label">Total Expenses</span>
+            <span className="cost-value">{formatCurrency(yearlyMetrics.totalExpenses)}</span>
+          </div>
+          <div className="cost-item">
+            <span className="cost-label">Profit Margin</span>
+            <span className="cost-value highlight">
+              {yearlyMetrics.totalRevenue > 0 ? Math.round((yearlyMetrics.totalProfit / yearlyMetrics.totalRevenue) * 100) : 0}%
+            </span>
+          </div>
+        </div>
+      </section>
 
       {shows.length === 0 && (
         <div className="empty-state">

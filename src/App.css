@@ -260,6 +260,43 @@ body {
   margin-bottom: 24px;
 }
 
+/* Shows section with view toggle */
+.shows-section {
+  margin-bottom: 24px;
+}
+
+.shows-view-toggle {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  background: var(--color-bg-muted);
+  padding: 4px;
+  border-radius: 8px;
+  width: fit-content;
+}
+
+.view-toggle-btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.view-toggle-btn:hover {
+  color: var(--color-text);
+}
+
+.view-toggle-btn.active {
+  background: var(--color-bg);
+  color: var(--color-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
 /* Footer */
 .app-footer {
   background: var(--color-bg-tertiary);

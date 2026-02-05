@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import EmployeeCard from './EmployeeCard';
 import EmployeeForm from './EmployeeForm';
 import SkillsMatrix from './SkillsMatrix';
@@ -7,6 +7,11 @@ import {
   TEAM_ASSIGNMENTS,
   EMPLOYEE_ROLES
 } from '../../data/sampleEmployeeData';
+import {
+  downloadEmployeeCSV,
+  importEmployeesFromFile,
+  validateEmployeeImport
+} from '../../utils/employeeCsvUtils';
 import './EmployeeList.css';
 
 // Sort options
@@ -35,7 +40,8 @@ export default function EmployeeList({
   onAdd,
   onUpdate,
   onDelete,
-  onToggleEmploymentType
+  onToggleEmploymentType,
+  onImport
 }) {
   // UI State
   const [searchQuery, setSearchQuery] = useState('');
@@ -49,6 +55,13 @@ export default function EmployeeList({
   const [editingEmployee, setEditingEmployee] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
+
+  // Import/Export state
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importData, setImportData] = useState(null);
+  const [importError, setImportError] = useState(null);
+  const [importValidation, setImportValidation] = useState(null);
+  const fileInputRef = useRef(null);
 
   const cardRefs = useRef({});
 
@@ -144,6 +157,57 @@ export default function EmployeeList({
     setShowAddForm(false);
   }, []);
 
+  // Export handler
+  const handleExport = useCallback(() => {
+    downloadEmployeeCSV(employees, employeeDaysWorked);
+  }, [employees, employeeDaysWorked]);
+
+  // Import handlers
+  const handleImportClick = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
+
+  const handleFileSelect = useCallback(async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setImportError(null);
+    setImportData(null);
+    setImportValidation(null);
+
+    try {
+      const importedEmployees = await importEmployeesFromFile(file);
+      const validation = validateEmployeeImport(importedEmployees, employees);
+
+      setImportData(importedEmployees);
+      setImportValidation(validation);
+      setShowImportModal(true);
+    } catch (err) {
+      setImportError(err.message);
+      setShowImportModal(true);
+    }
+
+    // Reset file input
+    e.target.value = '';
+  }, [employees]);
+
+  const handleImportConfirm = useCallback((mode) => {
+    if (importData && onImport) {
+      onImport(importData, mode);
+    }
+    setShowImportModal(false);
+    setImportData(null);
+    setImportValidation(null);
+    setImportError(null);
+  }, [importData, onImport]);
+
+  const handleImportCancel = useCallback(() => {
+    setShowImportModal(false);
+    setImportData(null);
+    setImportValidation(null);
+    setImportError(null);
+  }, []);
+
   // Count employees by type for summary
   const fullTimeCount = filteredEmployees.filter(e => e.employmentType === 'full_time').length;
   const dayRateCount = filteredEmployees.filter(e => e.employmentType === 'day_rate').length;
@@ -163,9 +227,24 @@ export default function EmployeeList({
             )}
           </div>
         </div>
-        <button className="btn-add-employee" onClick={() => setShowAddForm(true)}>
-          + Add Employee
-        </button>
+        <div className="header-actions">
+          <button className="btn-export" onClick={handleExport} title="Export to CSV">
+            Export CSV
+          </button>
+          <button className="btn-import" onClick={handleImportClick} title="Import from CSV">
+            Import CSV
+          </button>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileSelect}
+            accept=".csv"
+            style={{ display: 'none' }}
+          />
+          <button className="btn-add-employee" onClick={() => setShowAddForm(true)}>
+            + Add Employee
+          </button>
+        </div>
       </div>
 
       {/* Controls */}
@@ -326,6 +405,84 @@ export default function EmployeeList({
                 Delete
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Import Modal */}
+      {showImportModal && (
+        <div className="confirm-overlay" onClick={handleImportCancel}>
+          <div className="import-modal" onClick={e => e.stopPropagation()}>
+            <h3>Import Team Data</h3>
+
+            {importError ? (
+              <>
+                <div className="import-error">
+                  <p><strong>Error reading file:</strong></p>
+                  <p>{importError}</p>
+                </div>
+                <div className="import-actions">
+                  <button className="btn-cancel" onClick={handleImportCancel}>
+                    Close
+                  </button>
+                </div>
+              </>
+            ) : importValidation ? (
+              <>
+                <div className="import-summary">
+                  <p><strong>File parsed successfully!</strong></p>
+                  <p className="import-stats">
+                    {importValidation.newEmployees.length} new employees to add
+                    <br />
+                    {importValidation.updatedEmployees.length} existing employees to update
+                  </p>
+                  {importValidation.errors.length > 0 && (
+                    <div className="import-warnings">
+                      <p><strong>Warnings:</strong></p>
+                      <ul>
+                        {importValidation.errors.map((err, i) => (
+                          <li key={i}>{err}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                <div className="import-options">
+                  <p><strong>Choose how to import:</strong></p>
+
+                  <button
+                    className="btn-import-option merge"
+                    onClick={() => handleImportConfirm('merge')}
+                  >
+                    <span className="option-title">Merge</span>
+                    <span className="option-desc">
+                      Add new employees and update existing ones by ID.
+                      Employees not in the file will be kept unchanged.
+                    </span>
+                  </button>
+
+                  <button
+                    className="btn-import-option replace"
+                    onClick={() => handleImportConfirm('replace')}
+                  >
+                    <span className="option-title">Replace All</span>
+                    <span className="option-desc">
+                      Remove all current employees and replace with the imported file.
+                      Use this for a complete roster refresh.
+                    </span>
+                  </button>
+                </div>
+
+                <div className="import-actions">
+                  <button className="btn-cancel" onClick={handleImportCancel}>
+                    Cancel
+                  </button>
+                </div>
+              </>
+            ) : (
+              <p>Processing file...</p>
+            )}
           </div>
         </div>
       )}

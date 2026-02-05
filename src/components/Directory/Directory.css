@@ -12,9 +12,9 @@
 }
 
 .stat-card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   padding: 16px 24px;
   display: flex;
   flex-direction: column;
@@ -26,14 +26,14 @@
 .stat-value {
   font-size: 24px;
   font-weight: 700;
-  color: #2e7d32;
+  color: var(--color-primary);
 }
 
 .stat-label {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 @media (max-width: 600px) {

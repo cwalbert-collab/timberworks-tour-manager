@@ -14,15 +14,17 @@
 
 .search-box input {
   padding: 10px 14px;
-  border: 1px solid #ced4da;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   font-size: 14px;
   width: 250px;
+  background: var(--card-bg);
+  color: var(--color-text);
 }
 
 .search-box input:focus {
   outline: none;
-  border-color: #2e7d32;
+  border-color: var(--color-primary);
 }
 
 .filter-group {
@@ -32,16 +34,17 @@
 
 .filter-group select {
   padding: 10px 12px;
-  border: 1px solid #ced4da;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   font-size: 14px;
-  background: white;
+  background: var(--card-bg);
+  color: var(--color-text);
   cursor: pointer;
 }
 
 .filter-group select:focus {
   outline: none;
-  border-color: #2e7d32;
+  border-color: var(--color-primary);
 }
 
 /* Sort Controls */
@@ -53,29 +56,30 @@
 
 .sort-group label {
   font-size: 14px;
-  color: #495057;
+  color: var(--color-text-secondary);
   font-weight: 500;
 }
 
 .sort-select {
   padding: 10px 12px;
-  border: 1px solid #ced4da;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   font-size: 14px;
-  background: white;
+  background: var(--card-bg);
+  color: var(--color-text);
   cursor: pointer;
   min-width: 160px;
 }
 
 .sort-select:focus {
   outline: none;
-  border-color: #2e7d32;
+  border-color: var(--color-primary);
 }
 
 .btn-add {
   margin-left: auto;
   padding: 10px 20px;
-  background: #2e7d32;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 6px;
@@ -86,13 +90,13 @@
 }
 
 .btn-add:hover {
-  background: #1b5e20;
+  background: var(--color-primary-dark);
 }
 
 /* Results count */
 .results-count {
   font-size: 13px;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 /* Venue Cards */
@@ -103,15 +107,15 @@
 }
 
 .venue-card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
   transition: box-shadow 0.2s;
 }
 
 .venue-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
 }
 
 .venue-card.inactive {
@@ -119,13 +123,13 @@
 }
 
 .venue-card.highlighted {
-  box-shadow: 0 0 0 3px #2e7d32, 0 4px 12px rgba(46, 125, 50, 0.3);
+  box-shadow: 0 0 0 3px var(--color-primary), 0 4px 12px rgba(46, 125, 50, 0.3);
   animation: highlight-pulse 2s ease-in-out;
 }
 
 @keyframes highlight-pulse {
-  0%, 100% { box-shadow: 0 0 0 3px #2e7d32, 0 4px 12px rgba(46, 125, 50, 0.3); }
-  50% { box-shadow: 0 0 0 5px #2e7d32, 0 4px 16px rgba(46, 125, 50, 0.5); }
+  0%, 100% { box-shadow: 0 0 0 3px var(--color-primary), 0 4px 12px rgba(46, 125, 50, 0.3); }
+  50% { box-shadow: 0 0 0 5px var(--color-primary), 0 4px 16px rgba(46, 125, 50, 0.5); }
 }
 
 .venue-card-header {
@@ -137,7 +141,7 @@
 }
 
 .venue-card-header:hover {
-  background: #f8f9fa;
+  background: var(--color-bg-hover);
 }
 
 .venue-main-info {
@@ -148,13 +152,13 @@
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text);
 }
 
 .venue-location {
   margin: 4px 0 0 0;
   font-size: 14px;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 /* Venue Quick Stats */
@@ -168,8 +172,8 @@
   display: inline-flex;
   align-items: center;
   padding: 2px 8px;
-  background: #e3f2fd;
-  color: #1565c0;
+  background: var(--color-secondary-light);
+  color: var(--color-secondary);
   border-radius: 10px;
   font-size: 11px;
   font-weight: 500;
@@ -179,8 +183,8 @@
   display: inline-flex;
   align-items: center;
   padding: 2px 8px;
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
   border-radius: 10px;
   font-size: 11px;
   font-weight: 500;
@@ -198,28 +202,28 @@
   font-size: 12px;
   font-weight: 500;
   text-transform: capitalize;
-  background: #e9ecef;
-  color: #495057;
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
 }
 
 .venue-type-badge.fairgrounds {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
 }
 
 .venue-type-badge.arena {
-  background: #e3f2fd;
-  color: #1565c0;
+  background: var(--color-secondary-light);
+  color: var(--color-secondary);
 }
 
 .venue-type-badge.amphitheater {
-  background: #fff3e0;
-  color: #ef6c00;
+  background: var(--color-warning-light);
+  color: var(--color-warning);
 }
 
 .venue-type-badge.festival {
-  background: #fce4ec;
-  color: #c2185b;
+  background: var(--color-red-light);
+  color: var(--color-red);
 }
 
 .venue-type-badge.expo {
@@ -229,12 +233,12 @@
 
 .contact-count {
   font-size: 13px;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 .expand-icon {
   font-size: 10px;
-  color: #6c757d;
+  color: var(--color-text-muted);
   transition: transform 0.2s;
 }
 
@@ -245,7 +249,7 @@
 /* Expanded Card Body */
 .venue-card-body {
   padding: 0 20px 20px;
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid var(--color-border);
 }
 
 .venue-details {
@@ -260,17 +264,17 @@
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 .detail-section p {
   margin: 4px 0;
   font-size: 14px;
-  color: #333;
+  color: var(--color-text);
 }
 
 .venue-website {
-  color: #1565c0;
+  color: var(--color-secondary);
   text-decoration: none;
   font-size: 14px;
 }
@@ -281,26 +285,26 @@
 
 .venue-notes {
   font-style: italic;
-  color: #6c757d !important;
+  color: var(--color-text-muted) !important;
   margin-top: 8px !important;
 }
 
 /* Contacts Section */
 .venue-contacts {
   padding: 16px 0;
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid var(--color-border);
 }
 
 .venue-contacts h4 {
   margin: 0 0 12px 0;
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text);
 }
 
 .no-contacts {
   font-size: 14px;
-  color: #6c757d;
+  color: var(--color-text-muted);
   font-style: italic;
 }
 
@@ -311,15 +315,15 @@
 }
 
 .contact-mini-card {
-  background: #f8f9fa;
+  background: var(--color-bg-tertiary);
   border-radius: 6px;
   padding: 12px;
   position: relative;
 }
 
 .contact-mini-card.primary {
-  background: #e8f5e9;
-  border: 1px solid #c8e6c9;
+  background: var(--color-primary-light);
+  border: 1px solid var(--color-primary);
 }
 
 .primary-badge {
@@ -328,7 +332,7 @@
   right: 8px;
   font-size: 10px;
   text-transform: uppercase;
-  background: #2e7d32;
+  background: var(--color-primary);
   color: white;
   padding: 2px 6px;
   border-radius: 4px;
@@ -338,20 +342,20 @@
   margin: 0;
   font-weight: 600;
   font-size: 14px;
-  color: #333;
+  color: var(--color-text);
 }
 
 .contact-role {
   margin: 2px 0 8px 0;
   font-size: 12px;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 .contact-phone,
 .contact-email {
   margin: 2px 0;
   font-size: 13px;
-  color: #495057;
+  color: var(--color-text-secondary);
 }
 
 /* Actions */
@@ -359,12 +363,12 @@
   display: flex;
   gap: 12px;
   padding-top: 16px;
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid var(--color-border);
 }
 
 .btn-edit {
   padding: 8px 16px;
-  background: #2e7d32;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 6px;
@@ -374,14 +378,14 @@
 }
 
 .btn-edit:hover {
-  background: #1b5e20;
+  background: var(--color-primary-dark);
 }
 
 .btn-delete {
   padding: 8px 16px;
-  background: #f8f9fa;
-  color: #c62828;
-  border: 1px solid #ced4da;
+  background: var(--color-bg-tertiary);
+  color: var(--color-red);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   font-size: 14px;
   cursor: pointer;
@@ -389,15 +393,15 @@
 }
 
 .btn-delete:hover {
-  background: #ffebee;
-  border-color: #c62828;
+  background: var(--color-red-light);
+  border-color: var(--color-red);
 }
 
 /* Empty State */
 .empty-state {
   text-align: center;
   padding: 40px 20px;
-  color: #6c757d;
+  color: var(--color-text-muted);
   font-style: italic;
 }
 
@@ -416,28 +420,28 @@
 }
 
 .confirm-modal {
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 24px;
   max-width: 400px;
   width: 90%;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
 }
 
 .confirm-modal h3 {
   margin: 0 0 12px 0;
   font-size: 18px;
-  color: #333;
+  color: var(--color-text);
 }
 
 .confirm-modal p {
   margin: 8px 0;
   font-size: 14px;
-  color: #495057;
+  color: var(--color-text-secondary);
 }
 
 .confirm-warning {
-  color: #c62828 !important;
+  color: var(--color-red) !important;
   font-size: 13px !important;
 }
 
@@ -450,21 +454,22 @@
 
 .btn-cancel {
   padding: 10px 20px;
-  background: #f8f9fa;
-  border: 1px solid #ced4da;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   font-size: 14px;
+  color: var(--color-text-secondary);
   cursor: pointer;
   transition: background 0.2s;
 }
 
 .btn-cancel:hover {
-  background: #e9ecef;
+  background: var(--color-bg-hover);
 }
 
 .btn-delete-confirm {
   padding: 10px 20px;
-  background: #c62828;
+  background: var(--color-red);
   color: white;
   border: none;
   border-radius: 6px;
@@ -474,7 +479,7 @@
 }
 
 .btn-delete-confirm:hover {
-  background: #b71c1c;
+  filter: brightness(0.9);
 }
 
 /* Export Section */
@@ -492,7 +497,7 @@
   padding: 10px 20px;
   font-size: 14px;
   font-weight: 500;
-  background: #2e7d32;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 6px;
@@ -501,7 +506,7 @@
 }
 
 .btn-export:hover {
-  background: #1b5e20;
+  background: var(--color-primary-dark);
 }
 
 .btn-export:active {

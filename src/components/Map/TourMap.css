@@ -256,6 +256,37 @@
   font-size: 16px;
 }
 
+/* Legend lines for routes */
+.legend-line {
+  width: 24px;
+  height: 3px;
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 1px;
+}
+
+.legend-line.solid {
+  background: currentColor;
+}
+
+.legend-line.dotted {
+  background: repeating-linear-gradient(
+    to right,
+    currentColor 0px,
+    currentColor 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+
+.legend-line.red {
+  color: #c62828;
+}
+
+.legend-line.blue {
+  color: #1565c0;
+}
+
 /* Route toggle */
 .route-toggle {
   display: flex;

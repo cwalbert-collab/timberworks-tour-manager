@@ -5,6 +5,7 @@ import './ShowForm.css';
 
 const emptyShow = {
   tour: TOURS.RED_TEAM,
+  status: 'confirmed',
   venueId: '',
   contactId: '',
   startDate: '',
@@ -303,12 +304,20 @@ export default function ShowForm({
           {/* Tour Selection */}
           <div className="form-section">
             <h3>Tour Assignment</h3>
-            <div className="form-row">
+            <div className="form-row two-col">
               <label className="form-field">
                 <span>Tour</span>
                 <select name="tour" value={formData.tour} onChange={handleChange}>
                   <option value={TOURS.RED_TEAM}>{TOURS.RED_TEAM}</option>
                   <option value={TOURS.BLUE_TEAM}>{TOURS.BLUE_TEAM}</option>
+                </select>
+              </label>
+              <label className="form-field">
+                <span>Booking Status</span>
+                <select name="status" value={formData.status || 'confirmed'} onChange={handleChange}>
+                  <option value="confirmed">Confirmed</option>
+                  <option value="tentative">Tentative</option>
+                  <option value="completed">Completed</option>
                 </select>
               </label>
             </div>

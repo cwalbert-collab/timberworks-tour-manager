@@ -9,9 +9,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   padding: 16px 20px;
 }
 
@@ -20,7 +20,7 @@
   flex-direction: column;
   gap: 4px;
   padding-right: 24px;
-  border-right: 1px solid #e9ecef;
+  border-right: 1px solid var(--color-border);
 }
 
 .payment-stat:last-child {
@@ -32,40 +32,40 @@
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 .stat-value {
   font-size: 20px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text);
 }
 
 .stat-value.positive {
-  color: #2e7d32;
+  color: var(--color-primary);
 }
 
 .stat-value.warning {
-  color: #f57c00;
+  color: var(--color-warning);
 }
 
 .payment-stat.alert {
-  background: #ffebee;
+  background: var(--color-red-light);
   padding: 8px 16px;
   border-radius: 6px;
   border-right: none;
 }
 
 .payment-stat.alert .stat-value {
-  color: #c62828;
+  color: var(--color-red);
 }
 
 /* List container */
 .payment-list > .list-header,
 .payment-list > .table-container {
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .payment-list > .list-header {
@@ -83,7 +83,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--color-border);
   gap: 16px;
   flex-wrap: wrap;
 }
@@ -97,19 +97,20 @@
 .filter-select {
   padding: 8px 12px;
   font-size: 14px;
-  border: 1px solid #ced4da;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
-  background: white;
+  background: var(--card-bg);
+  color: var(--color-text);
   cursor: pointer;
 }
 
 .filter-select:focus {
   outline: none;
-  border-color: #2e7d32;
+  border-color: var(--color-primary);
 }
 
 .btn-add {
-  background: #2e7d32;
+  background: var(--color-primary);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -122,7 +123,7 @@
 }
 
 .btn-add:hover {
-  background: #1b5e20;
+  background: var(--color-primary-dark);
 }
 
 /* Table */
@@ -139,16 +140,16 @@
 .payments-table td {
   padding: 12px 16px;
   text-align: left;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .payments-table th {
-  background: #f8f9fa;
+  background: var(--color-bg-tertiary);
   font-weight: 600;
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 .payments-table th.sortable {
@@ -157,19 +158,19 @@
 }
 
 .payments-table th.sortable:hover {
-  background: #e9ecef;
+  background: var(--color-bg-hover);
 }
 
 .payments-table tbody tr:hover {
-  background: #f8f9fa;
+  background: var(--color-bg-hover);
 }
 
 .payments-table tbody tr.overdue-row {
-  background: #fff8f8;
+  background: var(--color-red-light);
 }
 
 .payments-table tbody tr.overdue-row:hover {
-  background: #ffebee;
+  filter: brightness(0.98);
 }
 
 /* Show cell */
@@ -180,15 +181,16 @@
 
 .show-name {
   font-weight: 500;
+  color: var(--color-text);
 }
 
 .show-date {
   font-size: 12px;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 .overdue-date {
-  color: #c62828;
+  color: var(--color-red);
   font-weight: 500;
 }
 
@@ -203,17 +205,17 @@
 }
 
 .amount-cell.positive {
-  color: #2e7d32;
+  color: var(--color-primary);
 }
 
 .amount-cell.warning {
-  color: #f57c00;
+  color: var(--color-warning);
 }
 
 .invoice-cell {
   font-family: 'SF Mono', Monaco, monospace;
   font-size: 13px;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 /* Status badges */
@@ -227,28 +229,28 @@
 }
 
 .status-badge.paid {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
 }
 
 .status-badge.pending {
-  background: #f5f5f5;
-  color: #616161;
+  background: var(--color-bg-hover);
+  color: var(--color-text-muted);
 }
 
 .status-badge.invoiced {
-  background: #e3f2fd;
-  color: #1565c0;
+  background: var(--color-secondary-light);
+  color: var(--color-secondary);
 }
 
 .status-badge.partial {
-  background: #fff3e0;
-  color: #e65100;
+  background: var(--color-warning-light);
+  color: var(--color-warning);
 }
 
 .status-badge.overdue {
-  background: #ffebee;
-  color: #c62828;
+  background: var(--color-red-light);
+  color: var(--color-red);
 }
 
 /* Actions */
@@ -273,35 +275,35 @@
 }
 
 .btn-paid {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
 }
 
 .btn-paid:hover {
-  background: #c8e6c9;
+  filter: brightness(0.95);
 }
 
 .btn-edit {
-  background: #e3f2fd;
-  color: #1565c0;
+  background: var(--color-secondary-light);
+  color: var(--color-secondary);
 }
 
 .btn-edit:hover {
-  background: #bbdefb;
+  filter: brightness(0.95);
 }
 
 .btn-delete {
-  background: #ffebee;
-  color: #c62828;
+  background: var(--color-red-light);
+  color: var(--color-red);
 }
 
 .btn-delete:hover {
-  background: #ffcdd2;
+  filter: brightness(0.95);
 }
 
 .no-results {
   text-align: center;
-  color: #6c757d;
+  color: var(--color-text-muted);
   font-style: italic;
   padding: 32px 16px;
 }
@@ -322,27 +324,27 @@
 }
 
 .confirm-modal {
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 24px;
   max-width: 400px;
   width: 100%;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
 }
 
 .confirm-modal h3 {
   margin: 0 0 12px 0;
   font-size: 20px;
-  color: #333;
+  color: var(--color-text);
 }
 
 .confirm-modal p {
   margin: 0 0 8px 0;
-  color: #495057;
+  color: var(--color-text-secondary);
 }
 
 .confirm-warning {
-  color: #c62828;
+  color: var(--color-red);
   font-size: 13px;
   margin-top: 12px;
 }
@@ -355,9 +357,9 @@
 }
 
 .btn-cancel {
-  background: #f8f9fa;
-  border: 1px solid #ced4da;
-  color: #495057;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
   padding: 10px 20px;
   font-size: 14px;
   border-radius: 6px;
@@ -365,11 +367,11 @@
 }
 
 .btn-cancel:hover {
-  background: #e9ecef;
+  background: var(--color-bg-hover);
 }
 
 .btn-save {
-  background: #2e7d32;
+  background: var(--color-primary);
   border: none;
   color: white;
   padding: 10px 20px;
@@ -379,11 +381,11 @@
 }
 
 .btn-save:hover {
-  background: #1b5e20;
+  background: var(--color-primary-dark);
 }
 
 .btn-delete-confirm {
-  background: #c62828;
+  background: var(--color-red);
   border: none;
   color: white;
   padding: 10px 20px;
@@ -393,7 +395,7 @@
 }
 
 .btn-delete-confirm:hover {
-  background: #b71c1c;
+  filter: brightness(0.9);
 }
 
 /* Export Section */
@@ -401,8 +403,8 @@
   display: flex;
   justify-content: center;
   padding: 16px;
-  background: #f8f9fa;
-  border-top: 1px solid #e9ecef;
+  background: var(--color-bg-tertiary);
+  border-top: 1px solid var(--color-border);
 }
 
 .btn-export {
@@ -412,7 +414,7 @@
   padding: 10px 20px;
   font-size: 14px;
   font-weight: 500;
-  background: #2e7d32;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 6px;
@@ -421,7 +423,7 @@
 }
 
 .btn-export:hover {
-  background: #1b5e20;
+  background: var(--color-primary-dark);
 }
 
 .btn-export:active {
@@ -442,7 +444,7 @@
     padding-right: 0;
     padding-bottom: 12px;
     border-right: none;
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 1px solid var(--color-border);
   }
 
   .payment-stat:last-child {

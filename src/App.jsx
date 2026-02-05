@@ -1,5 +1,6 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import DataTable from './components/DataTable/DataTable';
+import ShowsByVenue from './components/ShowsByVenue/ShowsByVenue';
 import ShowForm from './components/Forms/ShowForm';
 import TourMap from './components/Map/TourMap';
 import CSVTools from './components/CSVTools/CSVTools';
@@ -13,7 +14,10 @@ import Reports from './components/Reports/Reports';
 import TabNavigation from './components/TabNavigation/TabNavigation';
 import GlobalSearch from './components/GlobalSearch/GlobalSearch';
 import InstallPrompt from './components/PWA/InstallPrompt';
+import DesignEditor from './components/DesignEditor/DesignEditor';
+import GoogleSheetsSettings from './components/GoogleSheetsSettings/GoogleSheetsSettings';
 import { useShows } from './hooks/useShows';
+import { useGoogleSheets } from './hooks/useGoogleSheets';
 import { useRevenue } from './hooks/useRevenue';
 import { useDirectory } from './hooks/useDirectory';
 import { useEmployees } from './hooks/useEmployees';
@@ -42,7 +46,10 @@ function App() {
     deletePayment,
     markPaymentPaid,
     getShowRevenueBreakdown,
-    getShowPayment
+    getShowPayment,
+    importTransactions,
+    importInventory,
+    resetToSampleData: resetRevenueToSampleData
   } = useRevenue();
   const {
     venues,
@@ -60,6 +67,8 @@ function App() {
     getVenueContacts,
     getContactVenue,
     getEntityActivities,
+    importVenues,
+    importContacts,
     resetToSampleData: resetDirectoryToSampleData
   } = useDirectory();
 
@@ -76,7 +85,7 @@ function App() {
     toggleEmploymentType,
     getShowAssignments,
     updateShowAssignments,
-    resetToSampleData: resetEmployeesToSampleData
+    importEmployees
   } = useEmployees(shows);
 
   // Etsy integration - pass importTransactions to sync orders as transactions
@@ -94,6 +103,28 @@ function App() {
   const [showRouteLines, setShowRouteLines] = useState(true);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [highlightedDirectoryItem, setHighlightedDirectoryItem] = useState(null); // { type: 'venue'|'contact', id: string }
+  const [designEditorOpen, setDesignEditorOpen] = useState(false);
+  const [designEditorPosition, setDesignEditorPosition] = useState(null);
+  const [sheetsSettingsOpen, setSheetsSettingsOpen] = useState(false);
+  const [showsView, setShowsView] = useState('venue'); // 'table' or 'venue'
+
+  // Google Sheets two-way sync
+  const googleSheets = useGoogleSheets();
+
+  // Right-click handler for design editor
+  useEffect(() => {
+    const handleContextMenu = (e) => {
+      // Only trigger on right-click with Ctrl or Meta key held
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        setDesignEditorPosition({ x: e.clientX, y: e.clientY });
+        setDesignEditorOpen(true);
+      }
+    };
+
+    document.addEventListener('contextmenu', handleContextMenu);
+    return () => document.removeEventListener('contextmenu', handleContextMenu);
+  }, []);
 
   // Create lookup maps for venues and contacts (for Directory lookups)
   const venueMap = useMemo(() => {
@@ -349,16 +380,43 @@ function App() {
 
         {/* Shows Tab */}
         {activeTab === 'shows' && (
-          <section className="table-section">
-            <DataTable
-              shows={shows}
-              onSelectShow={handleSelectShow}
-              selectedShowId={selectedShow?.id}
-              onEdit={handleEdit}
-              onDelete={handleDeleteClick}
-              venues={venues}
-              contacts={contacts}
-            />
+          <section className="shows-section">
+            <div className="shows-view-toggle">
+              <button
+                className={`view-toggle-btn ${showsView === 'venue' ? 'active' : ''}`}
+                onClick={() => setShowsView('venue')}
+              >
+                By Venue
+              </button>
+              <button
+                className={`view-toggle-btn ${showsView === 'table' ? 'active' : ''}`}
+                onClick={() => setShowsView('table')}
+              >
+                Table View
+              </button>
+            </div>
+
+            {showsView === 'table' ? (
+              <DataTable
+                shows={shows}
+                onSelectShow={handleSelectShow}
+                selectedShowId={selectedShow?.id}
+                onEdit={handleEdit}
+                onDelete={handleDeleteClick}
+                venues={venues}
+                contacts={contacts}
+              />
+            ) : (
+              <ShowsByVenue
+                shows={shows}
+                venues={venues}
+                contacts={contacts}
+                onSelectShow={handleSelectShow}
+                selectedShowId={selectedShow?.id}
+                onEdit={handleEdit}
+                onDelete={handleDeleteClick}
+              />
+            )}
           </section>
         )}
 
@@ -387,6 +445,7 @@ function App() {
             onUpdate={updateEmployee}
             onDelete={deleteEmployee}
             onToggleEmploymentType={toggleEmploymentType}
+            onImport={importEmployees}
           />
         )}
 
@@ -465,16 +524,22 @@ function App() {
               <div className="map-controls">
                 <div className="map-legend">
                   <span className="legend-item">
-                    <span className="legend-dot red"></span> Red Team
+                    <span className="legend-line solid red"></span> Next Month (Red)
                   </span>
                   <span className="legend-item">
-                    <span className="legend-dot blue"></span> Blue Team
+                    <span className="legend-line solid blue"></span> Next Month (Blue)
                   </span>
                   <span className="legend-item">
-                    <span className="legend-dot green"></span> Future Booking
+                    <span className="legend-line dotted red"></span> Following Month (Red)
                   </span>
                   <span className="legend-item">
-                    <span className="legend-dot gray small"></span> Past Show
+                    <span className="legend-line dotted blue"></span> Following Month (Blue)
+                  </span>
+                  <span className="legend-item">
+                    <span className="legend-dot green"></span> Future Confirmed
+                  </span>
+                  <span className="legend-item">
+                    <span className="legend-dot gray small"></span> Past Shows
                   </span>
                   <span className="legend-item">
                     <span className="legend-star">★</span> Homebase
@@ -506,12 +571,24 @@ function App() {
             shows={shows}
             onImport={importShows}
             existingShows={shows}
+            // Directory data
+            venues={venues}
+            contacts={contacts}
+            onImportVenues={importVenues}
+            onImportContacts={importContacts}
+            // Revenue data
+            transactions={transactions}
+            inventory={inventory}
+            onImportTransactions={importTransactions}
+            onImportInventory={importInventory}
+            // Reset functions
             onReset={resetToSampleData}
             onResetDirectory={resetDirectoryToSampleData}
-            onResetEmployees={resetEmployeesToSampleData}
+            onResetRevenue={resetRevenueToSampleData}
             venueCount={venues.length}
             contactCount={contacts.length}
-            employeeCount={employees.length}
+            onOpenGoogleSheets={() => setSheetsSettingsOpen(true)}
+            googleSheetsConnected={googleSheets.isConfigured}
           />
         )}
       </main>
@@ -563,6 +640,28 @@ function App() {
 
       {/* PWA Install Prompt */}
       <InstallPrompt />
+
+      {/* Google Sheets Settings Modal */}
+      <GoogleSheetsSettings
+        isOpen={sheetsSettingsOpen}
+        onClose={() => setSheetsSettingsOpen(false)}
+        config={googleSheets.config}
+        setConfig={googleSheets.setConfig}
+        syncing={googleSheets.syncing}
+        lastSync={googleSheets.lastSync}
+        error={googleSheets.error}
+        onFetchShows={googleSheets.fetchShows}
+        onPushAllShows={googleSheets.pushAllShows}
+        testConnection={googleSheets.testConnection}
+        shows={shows}
+      />
+
+      {/* Design Editor (right-click with Ctrl/Cmd to open) */}
+      <DesignEditor
+        isOpen={designEditorOpen}
+        onClose={() => setDesignEditorOpen(false)}
+        position={designEditorPosition}
+      />
     </div>
   );
 }

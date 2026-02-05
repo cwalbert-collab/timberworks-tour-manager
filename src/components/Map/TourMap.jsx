@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -6,19 +6,23 @@ import './TourMap.css';
 import { formatDateRange } from '../../data/sampleData';
 import { useRoadRoute } from '../../hooks/useRoadRoute';
 
-// Hayward, Wisconsin - Homebase
+// Hayward, Wisconsin - Homebase (configurable for future changes)
 const HOMEBASE = {
   name: 'Hayward, WI (Homebase)',
   lat: 46.0130,
   lng: -91.4846
 };
 
+// Route planning windows
+const FIRST_MONTH_DAYS = 30;   // Next month = solid lines
+const SECOND_MONTH_DAYS = 60;  // Following month = dotted lines
+
 // Marker colors
 const colors = {
   redTeam: '#c62828',
   blueTeam: '#1565c0',
-  futureBooked: '#2e7d32',  // Green for future booked venues
-  past: '#9e9e9e'           // Gray for past shows
+  futureBooked: '#2e7d32',  // Green for future confirmed bookings
+  past: '#9e9e9e'           // Gray for past shows (no team distinction)
 };
 
 // Custom marker icons with size option
@@ -68,9 +72,6 @@ function FitBounds({ shows }) {
   return null;
 }
 
-// Route planning window (3 months)
-const ROUTE_WINDOW_MONTHS = 3;
-
 // Helper to get show date status based on startDate and endDate
 const getShowDateStatus = (startDate, endDate) => {
   const today = new Date();
@@ -82,15 +83,20 @@ const getShowDateStatus = (startDate, endDate) => {
   const end = new Date(endDate || startDate);
   end.setHours(0, 0, 0, 0);
 
-  const routeWindowEnd = new Date(today);
-  routeWindowEnd.setMonth(routeWindowEnd.getMonth() + ROUTE_WINDOW_MONTHS);
+  const firstMonthEnd = new Date(today);
+  firstMonthEnd.setDate(firstMonthEnd.getDate() + FIRST_MONTH_DAYS);
+
+  const secondMonthEnd = new Date(today);
+  secondMonthEnd.setDate(secondMonthEnd.getDate() + SECOND_MONTH_DAYS);
 
   if (end < today) {
     return 'past'; // Show has completely ended
-  } else if (start <= routeWindowEnd) {
-    return 'upcoming'; // Starts within next 3 months - shows on route line
+  } else if (start <= firstMonthEnd) {
+    return 'firstMonth'; // Within next month - solid route line
+  } else if (start <= secondMonthEnd) {
+    return 'secondMonth'; // Within following month - dotted route line
   } else {
-    return 'future'; // Starts beyond 3 months - green marker
+    return 'future'; // Beyond 2 months - green marker, no route
   }
 };
 
@@ -101,19 +107,41 @@ const getDurationDays = (startDate, endDate) => {
   return Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
 };
 
+/**
+ * Build waypoints for a list of shows including homebase at start and end.
+ */
+const buildWaypoints = (shows) => {
+  if (!shows || shows.length === 0) return [];
+  return [
+    [HOMEBASE.lat, HOMEBASE.lng],
+    ...shows.map(s => [s.latitude, s.longitude]),
+    [HOMEBASE.lat, HOMEBASE.lng]
+  ];
+};
+
 export default function TourMap({
   shows,
   selectedShowId,
   onSelectShow,
   showRouteLines = true
 }) {
-  // Categorize shows by date status
-  const { pastShows, upcomingShows, futureShows, redTeamUpcoming, blueTeamUpcoming } = useMemo(() => {
+  // Categorize shows by date status and team
+  const {
+    pastShows,
+    upcomingShows,
+    futureShows,
+    redFirstMonth,
+    redSecondMonth,
+    blueFirstMonth,
+    blueSecondMonth
+  } = useMemo(() => {
     const past = [];
-    const upcoming = [];
+    const upcoming = [];  // All shows within 2 months (for markers)
     const future = [];
-    const redUpcoming = [];
-    const blueUpcoming = [];
+    const redFirst = [];
+    const redSecond = [];
+    const blueFirst = [];
+    const blueSecond = [];
 
     shows.forEach(show => {
       if (!show.latitude || !show.longitude) return;
@@ -122,61 +150,68 @@ export default function TourMap({
 
       if (status === 'past') {
         past.push(show);
-      } else if (status === 'upcoming') {
+      } else if (status === 'firstMonth') {
         upcoming.push(show);
         if (show.tour === 'Red Team') {
-          redUpcoming.push(show);
+          redFirst.push(show);
         } else {
-          blueUpcoming.push(show);
+          blueFirst.push(show);
+        }
+      } else if (status === 'secondMonth') {
+        upcoming.push(show);
+        if (show.tour === 'Red Team') {
+          redSecond.push(show);
+        } else {
+          blueSecond.push(show);
         }
       } else {
         future.push(show);
       }
     });
 
-    // Sort upcoming shows by startDate for route lines
-    redUpcoming.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
-    blueUpcoming.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+    // Sort by startDate for proper route ordering
+    const sortByDate = (a, b) => new Date(a.startDate) - new Date(b.startDate);
+    redFirst.sort(sortByDate);
+    redSecond.sort(sortByDate);
+    blueFirst.sort(sortByDate);
+    blueSecond.sort(sortByDate);
 
     return {
       pastShows: past,
       upcomingShows: upcoming,
       futureShows: future,
-      redTeamUpcoming: redUpcoming,
-      blueTeamUpcoming: blueUpcoming
+      redFirstMonth: redFirst,
+      redSecondMonth: redSecond,
+      blueFirstMonth: blueFirst,
+      blueSecondMonth: blueSecond
     };
   }, [shows]);
 
-  // Create waypoints for upcoming shows within 3 months (starting and ending at homebase)
-  const redWaypoints = useMemo(() => {
-    if (redTeamUpcoming.length === 0) return [];
-    return [
-      [HOMEBASE.lat, HOMEBASE.lng],
-      ...redTeamUpcoming.map(s => [s.latitude, s.longitude]),
-      [HOMEBASE.lat, HOMEBASE.lng] // Return to homebase
-    ];
-  }, [redTeamUpcoming]);
+  // Build waypoints for each route segment
+  const redFirstWaypoints = useMemo(() => buildWaypoints(redFirstMonth), [redFirstMonth]);
+  const redSecondWaypoints = useMemo(() => buildWaypoints(redSecondMonth), [redSecondMonth]);
+  const blueFirstWaypoints = useMemo(() => buildWaypoints(blueFirstMonth), [blueFirstMonth]);
+  const blueSecondWaypoints = useMemo(() => buildWaypoints(blueSecondMonth), [blueSecondMonth]);
 
-  const blueWaypoints = useMemo(() => {
-    if (blueTeamUpcoming.length === 0) return [];
-    return [
-      [HOMEBASE.lat, HOMEBASE.lng],
-      ...blueTeamUpcoming.map(s => [s.latitude, s.longitude]),
-      [HOMEBASE.lat, HOMEBASE.lng] // Return to homebase
-    ];
-  }, [blueTeamUpcoming]);
-
-  // Fetch road-following routes from OSRM (with caching and fallback)
-  const { route: redRoute, isLoading: redLoading, isRoadRoute: redIsRoad } = useRoadRoute(
-    redWaypoints,
-    { enabled: showRouteLines && redWaypoints.length >= 2 }
+  // Fetch road-following routes from OSRM for all route segments
+  const { route: redFirstRoute, isLoading: redFirstLoading } = useRoadRoute(
+    redFirstWaypoints,
+    { enabled: showRouteLines && redFirstWaypoints.length >= 2 }
   );
-  const { route: blueRoute, isLoading: blueLoading, isRoadRoute: blueIsRoad } = useRoadRoute(
-    blueWaypoints,
-    { enabled: showRouteLines && blueWaypoints.length >= 2 }
+  const { route: redSecondRoute, isLoading: redSecondLoading } = useRoadRoute(
+    redSecondWaypoints,
+    { enabled: showRouteLines && redSecondWaypoints.length >= 2 }
+  );
+  const { route: blueFirstRoute, isLoading: blueFirstLoading } = useRoadRoute(
+    blueFirstWaypoints,
+    { enabled: showRouteLines && blueFirstWaypoints.length >= 2 }
+  );
+  const { route: blueSecondRoute, isLoading: blueSecondLoading } = useRoadRoute(
+    blueSecondWaypoints,
+    { enabled: showRouteLines && blueSecondWaypoints.length >= 2 }
   );
 
-  const isLoadingRoutes = redLoading || blueLoading;
+  const isLoadingRoutes = redFirstLoading || redSecondLoading || blueFirstLoading || blueSecondLoading;
 
   // Get all valid shows for bounds calculation
   const validShows = shows.filter(s => s.latitude && s.longitude);
@@ -186,11 +221,11 @@ export default function TourMap({
     const status = getShowDateStatus(show.startDate, show.endDate);
 
     if (status === 'past') {
-      return createIcon(colors.past, 'small');
+      return createIcon(colors.past, 'small');  // Gray, no team distinction
     } else if (status === 'future') {
-      return createIcon(colors.futureBooked, 'normal');
+      return createIcon(colors.futureBooked, 'normal');  // Green
     } else {
-      // Upcoming (within next 3 months) - use team colors
+      // Within 2 months - use team colors
       return createIcon(show.tour === 'Red Team' ? colors.redTeam : colors.blueTeam, 'normal');
     }
   };
@@ -202,7 +237,7 @@ export default function TourMap({
     const durationStr = duration > 1 ? ` (${duration} days)` : '';
 
     if (status === 'past') return `Past Show${durationStr}`;
-    if (status === 'future') return `Future Booking${durationStr}`;
+    if (status === 'future') return `Future Confirmed${durationStr}`;
     return `Upcoming${durationStr}`;
   };
 
@@ -241,28 +276,45 @@ export default function TourMap({
           </Popup>
         </Marker>
 
-        {/* Route lines - for upcoming shows within 3 months */}
-        {/* Road routes shown as solid, straight-line fallbacks shown as dashed */}
-        {showRouteLines && redRoute && redRoute.length > 1 && (
+        {/* First month routes - SOLID lines (road-following) */}
+        {showRouteLines && redFirstRoute && redFirstRoute.length > 1 && (
           <Polyline
-            positions={redRoute}
+            positions={redFirstRoute}
             color={colors.redTeam}
             weight={3}
-            opacity={0.8}
-            dashArray={redIsRoad ? null : '10, 10'}
+            opacity={0.9}
           />
         )}
-        {showRouteLines && blueRoute && blueRoute.length > 1 && (
+        {showRouteLines && blueFirstRoute && blueFirstRoute.length > 1 && (
           <Polyline
-            positions={blueRoute}
+            positions={blueFirstRoute}
             color={colors.blueTeam}
             weight={3}
-            opacity={0.8}
-            dashArray={blueIsRoad ? null : '10, 10'}
+            opacity={0.9}
           />
         )}
 
-        {/* Past venue markers (smaller, gray) */}
+        {/* Second month routes - DOTTED lines (road-following) */}
+        {showRouteLines && redSecondRoute && redSecondRoute.length > 1 && (
+          <Polyline
+            positions={redSecondRoute}
+            color={colors.redTeam}
+            weight={2}
+            opacity={0.6}
+            dashArray="5, 10"
+          />
+        )}
+        {showRouteLines && blueSecondRoute && blueSecondRoute.length > 1 && (
+          <Polyline
+            positions={blueSecondRoute}
+            color={colors.blueTeam}
+            weight={2}
+            opacity={0.6}
+            dashArray="5, 10"
+          />
+        )}
+
+        {/* Past venue markers (smaller, gray - no team distinction) */}
         {pastShows.map(show => (
           <Marker
             key={show.id}
@@ -287,7 +339,7 @@ export default function TourMap({
           </Marker>
         ))}
 
-        {/* Upcoming venue markers (within next 3 months - team colors, on route) */}
+        {/* Upcoming venue markers (within 2 months - team colors) */}
         {upcomingShows.map(show => (
           <Marker
             key={show.id}
@@ -310,7 +362,7 @@ export default function TourMap({
           </Marker>
         ))}
 
-        {/* Future venue markers (beyond 3 months - green) */}
+        {/* Future venue markers (beyond 2 months - green) */}
         {futureShows.map(show => (
           <Marker
             key={show.id}

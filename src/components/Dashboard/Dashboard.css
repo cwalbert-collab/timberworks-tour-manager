@@ -4,21 +4,86 @@
   gap: 24px;
 }
 
-/* Summary Cards */
-.summary-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
+/* Section Titles */
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 16px 0;
 }
 
-.summary-card {
+/* Year Selector Tabs */
+.year-selector {
+  display: flex;
+  justify-content: center;
+}
+
+.year-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--color-bg-tertiary);
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.year-tab {
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.year-tab:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text);
+}
+
+.year-tab.active {
+  background: var(--color-primary);
+  color: white;
+}
+
+/* Summary Section */
+.summary-section,
+.team-section,
+.all-time-section {
   background: var(--card-bg);
   border-radius: 8px;
   box-shadow: var(--shadow-md);
   padding: 20px;
+}
+
+/* Summary Cards */
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.summary-cards.all-time {
+  margin-bottom: 16px;
+}
+
+.summary-card {
+  background: var(--color-bg-tertiary);
+  border-radius: 8px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.summary-card.compact {
+  padding: 12px;
+}
+
+.summary-card.compact .summary-card-value {
+  font-size: 22px;
 }
 
 .summary-card-title {
@@ -29,7 +94,7 @@
 }
 
 .summary-card-value {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 700;
   color: var(--color-text);
 }
@@ -67,17 +132,24 @@
   gap: 16px;
 }
 
+.team-breakdown.compact {
+  margin-top: 16px;
+}
+
 .team-card {
-  background: var(--card-bg);
+  background: var(--color-bg-tertiary);
   border-radius: 8px;
-  box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
+.team-card.compact {
+  background: var(--color-bg-tertiary);
+}
+
 .team-card-header {
-  padding: 16px 20px;
+  padding: 12px 16px;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .team-card.red .team-card-header {
@@ -91,10 +163,21 @@
 }
 
 .team-card-stats {
-  padding: 20px;
+  padding: 16px;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.team-card-stats.expanded {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.team-card-stats.compact-row {
+  display: flex;
+  flex-wrap: wrap;
   gap: 16px;
+  padding: 12px 16px;
 }
 
 .stat-item {
@@ -103,15 +186,30 @@
   gap: 4px;
 }
 
+.stat-item.inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.stat-item.inline .stat-label {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.stat-item.inline .stat-value {
+  font-size: 14px;
+}
+
 .stat-label {
-  font-size: 12px;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--color-text-muted);
 }
 
 .stat-value {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--color-text);
 }
@@ -205,6 +303,10 @@
   border-radius: 8px;
   padding: 20px;
   box-shadow: var(--shadow-md);
+}
+
+.follow-up-reminders.priority {
+  border-left: 4px solid var(--color-warning);
 }
 
 .follow-up-reminders h3 {
@@ -349,13 +451,23 @@
     gap: 16px;
   }
 
+  .year-tabs {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .year-tab {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+
   .summary-cards {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
 
   .summary-card {
-    padding: 16px;
+    padding: 14px;
   }
 
   .summary-card-value {
@@ -366,8 +478,17 @@
     grid-template-columns: 1fr;
   }
 
+  .team-card-stats.expanded {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .team-card-stats {
-    padding: 16px;
+    padding: 14px;
+  }
+
+  .team-card-stats.compact-row {
+    flex-direction: column;
+    gap: 8px;
   }
 
   .costs-row {
@@ -376,7 +497,10 @@
   }
 
   .revenue-breakdown,
-  .costs-overview {
+  .costs-overview,
+  .summary-section,
+  .team-section,
+  .all-time-section {
     padding: 16px;
   }
 
@@ -405,6 +529,10 @@
 
   .summary-card-value {
     font-size: 26px;
+  }
+
+  .team-card-stats.expanded {
+    grid-template-columns: 1fr 1fr;
   }
 
   /* Make clickable cards more obvious on mobile */

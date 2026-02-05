@@ -1,7 +1,7 @@
 .transaction-list {
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
@@ -11,7 +11,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--color-border);
   gap: 16px;
   flex-wrap: wrap;
 }
@@ -25,28 +25,31 @@
 .filter-select {
   padding: 8px 12px;
   font-size: 14px;
-  border: 1px solid #ced4da;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
-  background: white;
+  background: var(--card-bg);
+  color: var(--color-text);
   cursor: pointer;
 }
 
 .filter-input {
   padding: 8px 12px;
   font-size: 14px;
-  border: 1px solid #ced4da;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   min-width: 200px;
+  background: var(--card-bg);
+  color: var(--color-text);
 }
 
 .filter-input:focus,
 .filter-select:focus {
   outline: none;
-  border-color: #2e7d32;
+  border-color: var(--color-primary);
 }
 
 .btn-add {
-  background: #2e7d32;
+  background: var(--color-primary);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -59,7 +62,7 @@
 }
 
 .btn-add:hover {
-  background: #1b5e20;
+  background: var(--color-primary-dark);
 }
 
 /* Table */
@@ -76,16 +79,16 @@
 .transactions-table td {
   padding: 12px 16px;
   text-align: left;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .transactions-table th {
-  background: #f8f9fa;
+  background: var(--color-bg-tertiary);
   font-weight: 600;
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 .transactions-table th.sortable {
@@ -94,19 +97,19 @@
 }
 
 .transactions-table th.sortable:hover {
-  background: #e9ecef;
+  background: var(--color-bg-hover);
 }
 
 .transactions-table tbody tr:hover {
-  background: #f8f9fa;
+  background: var(--color-bg-hover);
 }
 
 .transactions-table tbody tr.expense-row {
-  background: #fff8f8;
+  background: var(--color-red-light);
 }
 
 .transactions-table tbody tr.expense-row:hover {
-  background: #ffebee;
+  filter: brightness(0.98);
 }
 
 /* Type badges */
@@ -120,23 +123,23 @@
 }
 
 .type-badge.show_fee {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
 }
 
 .type-badge.merch_sale {
-  background: #e3f2fd;
-  color: #1565c0;
+  background: var(--color-secondary-light);
+  color: var(--color-secondary);
 }
 
 .type-badge.expense {
-  background: #ffebee;
-  color: #c62828;
+  background: var(--color-red-light);
+  color: var(--color-red);
 }
 
 .type-badge.refund {
-  background: #fff3e0;
-  color: #e65100;
+  background: var(--color-warning-light);
+  color: var(--color-warning);
 }
 
 /* Columns */
@@ -151,11 +154,11 @@
 }
 
 .amount-cell.positive {
-  color: #2e7d32;
+  color: var(--color-primary);
 }
 
 .amount-cell.negative {
-  color: #c62828;
+  color: var(--color-red);
 }
 
 .description-cell {
@@ -168,7 +171,7 @@
 .method-cell {
   text-transform: capitalize;
   font-size: 13px;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 .actions-col {
@@ -192,26 +195,26 @@
 }
 
 .btn-edit {
-  background: #e3f2fd;
-  color: #1565c0;
+  background: var(--color-secondary-light);
+  color: var(--color-secondary);
 }
 
 .btn-edit:hover {
-  background: #bbdefb;
+  filter: brightness(0.95);
 }
 
 .btn-delete {
-  background: #ffebee;
-  color: #c62828;
+  background: var(--color-red-light);
+  color: var(--color-red);
 }
 
 .btn-delete:hover {
-  background: #ffcdd2;
+  filter: brightness(0.95);
 }
 
 .no-results {
   text-align: center;
-  color: #6c757d;
+  color: var(--color-text-muted);
   font-style: italic;
   padding: 32px 16px;
 }
@@ -232,27 +235,27 @@
 }
 
 .confirm-modal {
-  background: white;
+  background: var(--card-bg);
   border-radius: 12px;
   padding: 24px;
   max-width: 400px;
   width: 100%;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
 }
 
 .confirm-modal h3 {
   margin: 0 0 12px 0;
   font-size: 20px;
-  color: #333;
+  color: var(--color-text);
 }
 
 .confirm-modal p {
   margin: 0 0 8px 0;
-  color: #495057;
+  color: var(--color-text-secondary);
 }
 
 .confirm-warning {
-  color: #c62828;
+  color: var(--color-red);
   font-size: 13px;
   margin-top: 12px;
 }
@@ -265,9 +268,9 @@
 }
 
 .btn-cancel {
-  background: #f8f9fa;
-  border: 1px solid #ced4da;
-  color: #495057;
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
   padding: 10px 20px;
   font-size: 14px;
   border-radius: 6px;
@@ -275,11 +278,11 @@
 }
 
 .btn-cancel:hover {
-  background: #e9ecef;
+  background: var(--color-bg-hover);
 }
 
 .btn-delete-confirm {
-  background: #c62828;
+  background: var(--color-red);
   border: none;
   color: white;
   padding: 10px 20px;
@@ -289,7 +292,7 @@
 }
 
 .btn-delete-confirm:hover {
-  background: #b71c1c;
+  filter: brightness(0.9);
 }
 
 /* Export Section */
@@ -297,8 +300,8 @@
   display: flex;
   justify-content: center;
   padding: 16px;
-  background: #f8f9fa;
-  border-top: 1px solid #e9ecef;
+  background: var(--color-bg-tertiary);
+  border-top: 1px solid var(--color-border);
 }
 
 .btn-export {
@@ -308,7 +311,7 @@
   padding: 10px 20px;
   font-size: 14px;
   font-weight: 500;
-  background: #2e7d32;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 6px;
@@ -317,7 +320,7 @@
 }
 
 .btn-export:hover {
-  background: #1b5e20;
+  background: var(--color-primary-dark);
 }
 
 .btn-export:active {
