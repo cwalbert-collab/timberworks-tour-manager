@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { TOURS } from '../../data/sampleData';
+import { validateVenue, validateContact } from '../../utils/validation';
 import './ShowForm.css';
 
 const emptyShow = {
@@ -186,15 +187,45 @@ export default function ShowForm({
       newErrors.venueId = 'Please select a venue or create a new one';
     }
     if (venueMode === 'create') {
-      if (!newVenue.name.trim()) newErrors.venueName = 'Venue name is required';
-      if (!newVenue.city.trim()) newErrors.venueCity = 'City is required';
-      if (!newVenue.state.trim()) newErrors.venueState = 'State is required';
+      const venueValidation = validateVenue(newVenue, venues);
+      if (!venueValidation.isValid) {
+        if (venueValidation.errors.name) newErrors.venueName = venueValidation.errors.name;
+        if (venueValidation.errors.city) newErrors.venueCity = venueValidation.errors.city;
+        if (venueValidation.errors.state) newErrors.venueState = venueValidation.errors.state;
+        if (venueValidation.errors.duplicate) newErrors.venueDuplicate = venueValidation.errors.duplicate;
+        if (venueValidation.errors.latitude) newErrors.venueLatitude = venueValidation.errors.latitude;
+        if (venueValidation.errors.longitude) newErrors.venueLongitude = venueValidation.errors.longitude;
+      }
+    }
+
+    // Contact validation (if creating new)
+    if (contactMode === 'create' && newContact.name) {
+      const contactValidation = validateContact(
+        { ...newContact, name: `${newContact.firstName} ${newContact.lastName}`.trim() },
+        contacts
+      );
+      if (contactValidation.errors.email) newErrors.contactEmail = contactValidation.errors.email;
+      if (contactValidation.errors.phone) newErrors.contactPhone = contactValidation.errors.phone;
     }
 
     // Show validation
     if (!formData.startDate) newErrors.startDate = 'Start date is required';
     if (!formData.performanceFee && formData.performanceFee !== 0) {
       newErrors.performanceFee = 'Performance fee is required';
+    }
+
+    // Numeric validation - check for negative values
+    if (formData.performanceFee && parseFloat(formData.performanceFee) < 0) {
+      newErrors.performanceFee = 'Performance fee cannot be negative';
+    }
+    if (formData.merchandiseSales && parseFloat(formData.merchandiseSales) < 0) {
+      newErrors.merchandiseSales = 'Merchandise sales cannot be negative';
+    }
+    if (formData.materialsUsed && parseFloat(formData.materialsUsed) < 0) {
+      newErrors.materialsUsed = 'Materials used cannot be negative';
+    }
+    if (formData.expenses && parseFloat(formData.expenses) < 0) {
+      newErrors.expenses = 'Expenses cannot be negative';
     }
 
     // Date validation

@@ -9,13 +9,16 @@ import Directory from './components/Directory/Directory';
 import Calendar from './components/Calendar/Calendar';
 import EmployeeList from './components/Employees/EmployeeList';
 import Insights from './components/Insights/Insights';
+import Reports from './components/Reports/Reports';
 import TabNavigation from './components/TabNavigation/TabNavigation';
+import GlobalSearch from './components/GlobalSearch/GlobalSearch';
 import InstallPrompt from './components/PWA/InstallPrompt';
 import { useShows } from './hooks/useShows';
 import { useRevenue } from './hooks/useRevenue';
 import { useDirectory } from './hooks/useDirectory';
 import { useEmployees } from './hooks/useEmployees';
 import { useEtsy } from './hooks/useEtsy';
+import { useTheme } from './hooks/useTheme';
 import { formatDateRange } from './data/sampleData';
 import './App.css';
 
@@ -80,6 +83,9 @@ function App() {
   const etsy = useEtsy((importedTxns) => {
     importedTxns.forEach(txn => addTransaction(txn));
   });
+
+  // Theme management
+  const { theme, toggleTheme } = useTheme();
 
   const [selectedShow, setSelectedShow] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -212,8 +218,29 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>Timberworks Tour Manager</h1>
-        <p className="subtitle">Track venues, shows, and revenue for your touring lumberjack shows</p>
+        <div className="header-content">
+          <h1>Timberworks Tour Manager</h1>
+          <p className="subtitle">Track venues, shows, and revenue for your touring lumberjack shows</p>
+        </div>
+        <GlobalSearch
+          shows={shows}
+          venues={venues}
+          contacts={contacts}
+          employees={employees}
+          onSelectShow={handleSelectShow}
+          onNavigateToVenue={(venueId) => handleNavigateToDirectory('venue', venueId)}
+          onNavigateToContact={(contactId) => handleNavigateToDirectory('contact', contactId)}
+          onNavigateToEmployee={() => setActiveTab('employees')}
+          onNavigateToTab={setActiveTab}
+        />
+        <button
+          className="theme-toggle"
+          onClick={toggleTheme}
+          title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+        >
+          {theme === 'light' ? '🌙' : '☀️'}
+        </button>
       </header>
 
       <main className="app-main">
@@ -368,6 +395,17 @@ function App() {
           <Insights
             shows={shows}
             venues={venues}
+          />
+        )}
+
+        {/* Reports Tab */}
+        {activeTab === 'reports' && (
+          <Reports
+            shows={shows}
+            venues={venues}
+            contacts={contacts}
+            transactions={transactions}
+            employees={employees}
           />
         )}
 

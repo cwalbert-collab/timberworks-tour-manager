@@ -8,6 +8,7 @@ const TABS = [
   { id: 'employees', label: 'Team', icon: '👥', primary: true },
   { id: 'insights', label: 'Insights', icon: '🧠', primary: false },
   { id: 'revenue', label: 'Revenue', icon: '💰', primary: false },
+  { id: 'reports', label: 'Reports', icon: '📄', primary: false },
   { id: 'directory', label: 'Directory', icon: '📇', primary: false },
   { id: 'map', label: 'Map', icon: '🗺️', primary: false },
   { id: 'import-export', label: 'Import/Export', icon: '📁', primary: false }

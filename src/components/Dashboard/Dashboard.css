@@ -12,9 +12,9 @@
 }
 
 .summary-card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -25,17 +25,17 @@
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 .summary-card-value {
   font-size: 28px;
   font-weight: 700;
-  color: #333;
+  color: var(--color-text);
 }
 
 .summary-card-value.highlight {
-  color: #2e7d32;
+  color: var(--color-primary);
 }
 
 /* Clickable card */
@@ -47,7 +47,7 @@
 
 .summary-card.clickable:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
 }
 
 .summary-card.clickable:active {
@@ -56,7 +56,7 @@
 
 .card-link-hint {
   font-size: 12px;
-  color: #2e7d32;
+  color: var(--color-primary);
   margin-top: 4px;
 }
 
@@ -68,9 +68,9 @@
 }
 
 .team-card {
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
@@ -81,13 +81,13 @@
 }
 
 .team-card.red .team-card-header {
-  background: #ffebee;
-  color: #c62828;
+  background: var(--color-red-light);
+  color: var(--color-red);
 }
 
 .team-card.blue .team-card-header {
-  background: #e3f2fd;
-  color: #1565c0;
+  background: var(--color-secondary-light);
+  color: var(--color-secondary);
 }
 
 .team-card-stats {
@@ -107,21 +107,21 @@
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 .stat-value {
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text);
 }
 
 /* Revenue Breakdown */
 .revenue-breakdown,
 .costs-overview {
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   padding: 20px;
 }
 
@@ -129,7 +129,7 @@
 .costs-overview h3 {
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text);
   margin: 0 0 16px 0;
 }
 
@@ -146,12 +146,12 @@
   justify-content: space-between;
   font-size: 14px;
   margin-bottom: 8px;
-  color: #495057;
+  color: var(--color-text-secondary);
 }
 
 .breakdown-bar-track {
   height: 24px;
-  background: #f1f3f4;
+  background: var(--color-bg-tertiary);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -163,11 +163,11 @@
 }
 
 .breakdown-bar-fill.fees {
-  background: #2e7d32;
+  background: var(--color-primary);
 }
 
 .breakdown-bar-fill.merch {
-  background: #1565c0;
+  background: var(--color-secondary);
 }
 
 /* Costs Overview */
@@ -186,32 +186,32 @@
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 .cost-value {
   font-size: 24px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text);
 }
 
 .cost-value.highlight {
-  color: #2e7d32;
+  color: var(--color-primary);
 }
 
 /* Follow-up Reminders */
 .follow-up-reminders {
-  background: white;
+  background: var(--card-bg);
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .follow-up-reminders h3 {
   margin: 0 0 16px 0;
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text);
   display: flex;
   align-items: center;
   gap: 12px;
@@ -220,8 +220,8 @@
 .overdue-count {
   font-size: 11px;
   font-weight: 500;
-  background: #ffebee;
-  color: #c62828;
+  background: var(--color-red-light);
+  color: var(--color-red);
   padding: 4px 10px;
   border-radius: 12px;
 }
@@ -237,7 +237,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: #f8f9fa;
+  background: var(--color-bg-tertiary);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
@@ -245,25 +245,25 @@
 }
 
 .reminder-item:hover {
-  background: #e9ecef;
+  background: var(--color-bg-hover);
 }
 
 .reminder-item.overdue {
-  background: #fff5f5;
-  border-left-color: #c62828;
+  background: var(--color-red-light);
+  border-left-color: var(--color-red);
 }
 
 .reminder-item.overdue:hover {
-  background: #ffebee;
+  filter: brightness(0.95);
 }
 
 .reminder-item.today {
-  background: #fff8e1;
-  border-left-color: #ef6c00;
+  background: var(--color-warning-light);
+  border-left-color: var(--color-warning);
 }
 
 .reminder-item.today:hover {
-  background: #fff3e0;
+  filter: brightness(0.95);
 }
 
 .reminder-contact {
@@ -275,12 +275,12 @@
 .reminder-name {
   font-weight: 600;
   font-size: 14px;
-  color: #333;
+  color: var(--color-text);
 }
 
 .reminder-venue {
   font-size: 12px;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 .reminder-date {
@@ -289,15 +289,15 @@
   gap: 6px;
   font-size: 13px;
   font-weight: 500;
-  color: #495057;
+  color: var(--color-text-secondary);
 }
 
 .reminder-date.overdue {
-  color: #c62828;
+  color: var(--color-red);
 }
 
 .reminder-date.today {
-  color: #ef6c00;
+  color: var(--color-warning);
 }
 
 .reminder-icon {
@@ -308,7 +308,7 @@
 .empty-state {
   text-align: center;
   padding: 40px 20px;
-  color: #6c757d;
+  color: var(--color-text-muted);
   font-style: italic;
 }
 
@@ -327,7 +327,7 @@
   padding: 10px 20px;
   font-size: 14px;
   font-weight: 500;
-  background: #2e7d32;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 6px;
@@ -336,7 +336,7 @@
 }
 
 .btn-export:hover {
-  background: #1b5e20;
+  background: var(--color-primary-dark);
 }
 
 .btn-export:active {
@@ -413,7 +413,7 @@
   }
 
   .summary-card.clickable:active {
-    border-color: #2e7d32;
-    background: #f8fff8;
+    border-color: var(--color-primary);
+    background: var(--color-primary-light);
   }
 }
