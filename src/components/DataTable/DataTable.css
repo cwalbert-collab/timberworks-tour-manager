@@ -1,0 +1,286 @@
+.data-table-container {
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.table-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.filter-input {
+  padding: 10px 14px;
+  font-size: 14px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  width: 320px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.filter-input:focus {
+  outline: none;
+  border-color: #2e7d32;
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+}
+
+.result-count {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.data-table th,
+.data-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e9ecef;
+  white-space: nowrap;
+}
+
+.data-table th {
+  background: #f1f3f4;
+  font-weight: 600;
+  color: #495057;
+  position: sticky;
+  top: 0;
+  user-select: none;
+}
+
+.data-table th.sortable {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.data-table th.sortable:hover {
+  background: #e9ecef;
+}
+
+.data-table tbody tr {
+  transition: background 0.15s;
+  cursor: pointer;
+}
+
+.data-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.data-table tbody tr.selected {
+  background: #e8f5e9;
+}
+
+.data-table tbody tr.selected:hover {
+  background: #c8e6c9;
+}
+
+/* Format-specific styles */
+.data-table td.currency,
+.data-table td.number {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Tour badge styles */
+.data-table td.tour-red,
+.data-table td.tour-blue {
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.data-table td.tour-red {
+  color: #c62828;
+}
+
+.data-table td.tour-blue {
+  color: #1565c0;
+}
+
+/* Profit column styling */
+.data-table td:nth-last-child(2) {
+  font-weight: 600;
+}
+
+/* Actions column */
+.actions-header {
+  text-align: center;
+  width: 120px;
+}
+
+.actions-cell {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.btn-action {
+  padding: 4px 10px;
+  font-size: 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0 2px;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-action:active {
+  transform: scale(0.95);
+}
+
+.btn-edit {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.btn-edit:hover {
+  background: #bbdefb;
+}
+
+.btn-delete {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.btn-delete:hover {
+  background: #ffcdd2;
+}
+
+.no-results {
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+  padding: 32px 16px;
+}
+
+/* Export Section */
+.export-section {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+}
+
+.btn-export {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  background: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-export:hover {
+  background: #1b5e20;
+}
+
+.btn-export:active {
+  transform: scale(0.98);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .data-table-container {
+    border-radius: 0;
+    margin: 0 -16px;
+    width: calc(100% + 32px);
+  }
+
+  .table-controls {
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+
+  .filter-input {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px; /* Prevents iOS zoom */
+    min-height: 48px;
+  }
+
+  .result-count {
+    text-align: center;
+  }
+
+  .table-wrapper {
+    /* Enable horizontal scroll with momentum */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 14px 12px;
+    font-size: 13px;
+  }
+
+  /* Make rows taller for better touch targets */
+  .data-table tbody tr {
+    min-height: 60px;
+  }
+
+  /* Larger action buttons on mobile */
+  .btn-action {
+    padding: 8px 14px;
+    font-size: 13px;
+    min-height: 36px;
+  }
+
+  .actions-cell {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .export-section {
+    padding: 16px;
+  }
+
+  .export-section .btn-export {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 20px;
+    font-size: 15px;
+    min-height: 48px;
+  }
+}
+
+/* Very small screens - hide some columns */
+@media (max-width: 480px) {
+  .data-table th,
+  .data-table td {
+    padding: 12px 8px;
+    font-size: 12px;
+  }
+
+  /* Hint about horizontal scroll */
+  .table-wrapper::after {
+    content: 'Swipe to see more →';
+    display: block;
+    text-align: center;
+    padding: 8px;
+    font-size: 12px;
+    color: #6c757d;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+  }
+}

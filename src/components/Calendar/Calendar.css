@@ -1,0 +1,508 @@
+.calendar-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Header */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.calendar-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  min-width: 200px;
+  text-align: center;
+}
+
+.btn-nav {
+  background: #f8f9fa;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-nav:hover {
+  background: #e9ecef;
+}
+
+.btn-today {
+  background: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-today:hover {
+  background: #1b5e20;
+}
+
+/* Legend */
+.calendar-legend {
+  display: flex;
+  gap: 20px;
+  padding: 12px 20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 13px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.legend-dot.red {
+  background: #c62828;
+}
+
+.legend-dot.blue {
+  background: #1565c0;
+}
+
+/* Calendar Grid */
+.calendar-grid {
+  padding: 16px;
+}
+
+.calendar-days-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.day-header {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  padding: 8px 0;
+}
+
+.calendar-weeks {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.calendar-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-day {
+  min-height: 90px;
+  padding: 8px;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-day:hover {
+  background: #f8f9fa;
+}
+
+.calendar-day.other-month {
+  background: #fafafa;
+  opacity: 0.6;
+}
+
+.calendar-day.today {
+  border-color: #2e7d32;
+  background: #f1f8e9;
+}
+
+.calendar-day.today .day-number {
+  background: #2e7d32;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-day.has-shows {
+  cursor: pointer;
+}
+
+.calendar-day.selected {
+  border-color: #1565c0;
+  background: #e3f2fd;
+}
+
+.day-number {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+/* Show Indicators */
+.day-shows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.show-indicator {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: white;
+}
+
+.show-indicator.red {
+  background: #c62828;
+}
+
+.show-indicator.blue {
+  background: #1565c0;
+}
+
+/* Multi-day event styling */
+.show-indicator.start {
+  border-radius: 3px 0 0 3px;
+  margin-right: -8px;
+}
+
+.show-indicator.middle {
+  border-radius: 0;
+  margin-left: -8px;
+  margin-right: -8px;
+}
+
+.show-indicator.end {
+  border-radius: 0 3px 3px 0;
+  margin-left: -8px;
+}
+
+.show-name {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.more-shows {
+  font-size: 10px;
+  color: #6c757d;
+  padding: 2px 4px;
+}
+
+/* Day Detail Panel */
+.day-detail {
+  border-top: 1px solid #e9ecef;
+  padding: 20px;
+  background: #f8f9fa;
+}
+
+.day-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.day-detail-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.btn-close:hover {
+  color: #333;
+}
+
+.day-detail-shows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detail-show-card {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-left: 4px solid #e9ecef;
+}
+
+.detail-show-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.detail-show-card.red {
+  border-left-color: #c62828;
+}
+
+.detail-show-card.blue {
+  border-left-color: #1565c0;
+}
+
+.detail-show-card.selected {
+  box-shadow: 0 0 0 2px #2e7d32;
+}
+
+/* Detail Card Header */
+.detail-show-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.detail-show-team {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.detail-show-card.red .detail-show-team {
+  color: #c62828;
+}
+
+.detail-show-card.blue .detail-show-team {
+  color: #1565c0;
+}
+
+.detail-show-fee {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+/* Clickable Venue/Contact Links */
+.detail-show-venue,
+.detail-show-contact {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #333;
+  padding: 6px 8px;
+  margin: 4px -8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.detail-show-venue {
+  font-weight: 600;
+}
+
+.detail-show-venue.clickable,
+.detail-show-contact.clickable {
+  cursor: pointer;
+}
+
+.detail-show-venue.clickable:hover,
+.detail-show-contact.clickable:hover {
+  background: #e8f5e9;
+}
+
+.link-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.venue-name,
+.contact-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contact-role {
+  font-size: 12px;
+  color: #6c757d;
+  font-weight: normal;
+}
+
+.link-arrow {
+  font-size: 12px;
+  color: #2e7d32;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.detail-show-venue.clickable:hover .link-arrow,
+.detail-show-contact.clickable:hover .link-arrow {
+  opacity: 1;
+}
+
+.detail-show-location {
+  font-size: 13px;
+  color: #6c757d;
+  margin-left: 28px;
+  margin-bottom: 4px;
+}
+
+.detail-show-time {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #495057;
+  padding: 4px 8px;
+  margin: 4px -8px;
+}
+
+/* Calendar Action Buttons */
+.detail-show-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e9ecef;
+}
+
+.btn-calendar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+  justify-content: center;
+}
+
+.btn-calendar .btn-icon {
+  font-size: 14px;
+}
+
+.btn-calendar.outlook {
+  background: #0078d4;
+  color: white;
+  border: none;
+}
+
+.btn-calendar.outlook:hover {
+  background: #106ebe;
+}
+
+.btn-calendar.ics {
+  background: white;
+  color: #495057;
+  border: 1px solid #ced4da;
+}
+
+.btn-calendar.ics:hover {
+  background: #f8f9fa;
+  border-color: #adb5bd;
+}
+
+/* Export Section */
+.export-section {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+}
+
+.btn-export {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  background: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-export:hover {
+  background: #1b5e20;
+}
+
+.btn-export:active {
+  transform: scale(0.98);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .calendar-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .calendar-day {
+    min-height: 60px;
+    padding: 4px;
+  }
+
+  .day-number {
+    font-size: 12px;
+  }
+
+  .show-indicator {
+    font-size: 8px;
+    padding: 1px 4px;
+  }
+
+  .show-name {
+    display: none;
+  }
+}

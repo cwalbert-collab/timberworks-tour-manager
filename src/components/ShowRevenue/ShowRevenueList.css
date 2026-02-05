@@ -1,0 +1,253 @@
+.show-revenue-list {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Header */
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e9ecef;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.list-filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-select {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+}
+
+.filter-input {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  min-width: 180px;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+  outline: none;
+  border-color: #2e7d32;
+}
+
+/* Table */
+.table-container {
+  overflow-x: auto;
+}
+
+.revenue-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.revenue-table th,
+.revenue-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.revenue-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6c757d;
+}
+
+.revenue-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.revenue-table th.sortable:hover {
+  background: #e9ecef;
+}
+
+.revenue-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+/* Venue cell */
+.venue-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.venue-name {
+  font-weight: 500;
+}
+
+.venue-location {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+/* Tour badges */
+.tour-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  border-radius: 4px;
+}
+
+.tour-badge.red {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.tour-badge.blue {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+/* Amount columns */
+.amount-col {
+  text-align: right;
+}
+
+.amount-cell {
+  text-align: right;
+  font-family: 'SF Mono', Monaco, monospace;
+}
+
+.amount-cell.expense {
+  color: #c62828;
+}
+
+.amount-cell.net {
+  font-weight: 600;
+}
+
+.amount-cell.net.positive {
+  color: #2e7d32;
+}
+
+.amount-cell.net.negative {
+  color: #c62828;
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  border-radius: 4px;
+}
+
+.status-badge.paid {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-badge.pending {
+  background: #f5f5f5;
+  color: #616161;
+}
+
+.status-badge.invoiced {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.status-badge.partial {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.status-badge.overdue {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.partial-amount {
+  display: block;
+  font-size: 11px;
+  color: #6c757d;
+  margin-top: 2px;
+}
+
+/* Totals row */
+.totals-row {
+  background: #f8f9fa;
+}
+
+.totals-row td {
+  border-top: 2px solid #dee2e6;
+}
+
+.no-results {
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+  padding: 32px 16px;
+}
+
+/* Export Section */
+.export-section {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+}
+
+.btn-export {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  background: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-export:hover {
+  background: #1b5e20;
+}
+
+.btn-export:active {
+  transform: scale(0.98);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .list-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .list-filters {
+    flex-direction: column;
+  }
+
+  .filter-input {
+    min-width: auto;
+    width: 100%;
+  }
+}

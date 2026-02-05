@@ -1,0 +1,551 @@
+.venue-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Toolbar */
+.venue-toolbar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.search-box input {
+  padding: 10px 14px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 250px;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #2e7d32;
+}
+
+.filter-group {
+  display: flex;
+  gap: 8px;
+}
+
+.filter-group select {
+  padding: 10px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: #2e7d32;
+}
+
+/* Sort Controls */
+.sort-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sort-group label {
+  font-size: 14px;
+  color: #495057;
+  font-weight: 500;
+}
+
+.sort-select {
+  padding: 10px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  min-width: 160px;
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: #2e7d32;
+}
+
+.btn-add {
+  margin-left: auto;
+  padding: 10px 20px;
+  background: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-add:hover {
+  background: #1b5e20;
+}
+
+/* Results count */
+.results-count {
+  font-size: 13px;
+  color: #6c757d;
+}
+
+/* Venue Cards */
+.venue-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.venue-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.venue-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.venue-card.inactive {
+  opacity: 0.6;
+}
+
+.venue-card.highlighted {
+  box-shadow: 0 0 0 3px #2e7d32, 0 4px 12px rgba(46, 125, 50, 0.3);
+  animation: highlight-pulse 2s ease-in-out;
+}
+
+@keyframes highlight-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px #2e7d32, 0 4px 12px rgba(46, 125, 50, 0.3); }
+  50% { box-shadow: 0 0 0 5px #2e7d32, 0 4px 16px rgba(46, 125, 50, 0.5); }
+}
+
+.venue-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  cursor: pointer;
+}
+
+.venue-card-header:hover {
+  background: #f8f9fa;
+}
+
+.venue-main-info {
+  flex: 1;
+}
+
+.venue-name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.venue-location {
+  margin: 4px 0 0 0;
+  font-size: 14px;
+  color: #6c757d;
+}
+
+/* Venue Quick Stats */
+.venue-quick-stats {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.distance-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: #e3f2fd;
+  color: #1565c0;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.revenue-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.venue-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.venue-type-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+  background: #e9ecef;
+  color: #495057;
+}
+
+.venue-type-badge.fairgrounds {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.venue-type-badge.arena {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.venue-type-badge.amphitheater {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+
+.venue-type-badge.festival {
+  background: #fce4ec;
+  color: #c2185b;
+}
+
+.venue-type-badge.expo {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.contact-count {
+  font-size: 13px;
+  color: #6c757d;
+}
+
+.expand-icon {
+  font-size: 10px;
+  color: #6c757d;
+  transition: transform 0.2s;
+}
+
+.expand-icon.expanded {
+  transform: rotate(180deg);
+}
+
+/* Expanded Card Body */
+.venue-card-body {
+  padding: 0 20px 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.venue-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 16px 0;
+}
+
+.detail-section h4 {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6c757d;
+}
+
+.detail-section p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.venue-website {
+  color: #1565c0;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.venue-website:hover {
+  text-decoration: underline;
+}
+
+.venue-notes {
+  font-style: italic;
+  color: #6c757d !important;
+  margin-top: 8px !important;
+}
+
+/* Contacts Section */
+.venue-contacts {
+  padding: 16px 0;
+  border-top: 1px solid #e9ecef;
+}
+
+.venue-contacts h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.no-contacts {
+  font-size: 14px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.contacts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.contact-mini-card {
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 12px;
+  position: relative;
+}
+
+.contact-mini-card.primary {
+  background: #e8f5e9;
+  border: 1px solid #c8e6c9;
+}
+
+.primary-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 10px;
+  text-transform: uppercase;
+  background: #2e7d32;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.contact-name {
+  margin: 0;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.contact-role {
+  margin: 2px 0 8px 0;
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.contact-phone,
+.contact-email {
+  margin: 2px 0;
+  font-size: 13px;
+  color: #495057;
+}
+
+/* Actions */
+.venue-actions {
+  display: flex;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid #e9ecef;
+}
+
+.btn-edit {
+  padding: 8px 16px;
+  background: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-edit:hover {
+  background: #1b5e20;
+}
+
+.btn-delete {
+  padding: 8px 16px;
+  background: #f8f9fa;
+  color: #c62828;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-delete:hover {
+  background: #ffebee;
+  border-color: #c62828;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Confirm Modal */
+.confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.confirm-modal {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.confirm-modal h3 {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.confirm-modal p {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #495057;
+}
+
+.confirm-warning {
+  color: #c62828 !important;
+  font-size: 13px !important;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.btn-cancel {
+  padding: 10px 20px;
+  background: #f8f9fa;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-cancel:hover {
+  background: #e9ecef;
+}
+
+.btn-delete-confirm {
+  padding: 10px 20px;
+  background: #c62828;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-delete-confirm:hover {
+  background: #b71c1c;
+}
+
+/* Export Section */
+.export-section {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.btn-export {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  background: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-export:hover {
+  background: #1b5e20;
+}
+
+.btn-export:active {
+  transform: scale(0.98);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .venue-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-box input {
+    width: 100%;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .filter-group select {
+    flex: 1;
+  }
+
+  .sort-group {
+    width: 100%;
+  }
+
+  .sort-select {
+    flex: 1;
+    width: 100%;
+    min-width: auto;
+  }
+
+  .btn-add {
+    margin-left: 0;
+  }
+
+  .venue-details {
+    grid-template-columns: 1fr;
+  }
+
+  .contacts-grid {
+    grid-template-columns: 1fr;
+  }
+}

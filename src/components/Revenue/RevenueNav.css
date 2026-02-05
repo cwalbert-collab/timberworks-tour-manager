@@ -1,0 +1,58 @@
+.revenue-nav {
+  margin-bottom: 20px;
+}
+
+.revenue-nav-list {
+  display: flex;
+  gap: 8px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.revenue-nav-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6c757d;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.revenue-nav-button:hover {
+  background: white;
+  color: #333;
+}
+
+.revenue-nav-button.active {
+  background: white;
+  color: #2e7d32;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.revenue-nav-icon {
+  font-size: 16px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .revenue-nav-list {
+    flex-wrap: wrap;
+  }
+
+  .revenue-nav-button {
+    flex: 1 1 45%;
+    justify-content: center;
+    padding: 8px 12px;
+  }
+
+  .revenue-nav-label {
+    font-size: 13px;
+  }
+}

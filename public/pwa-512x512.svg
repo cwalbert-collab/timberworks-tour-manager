@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="64" fill="#2e7d32"/>
+
+  <!-- Pine Tree -->
+  <polygon points="256,64 128,267 192,267 107,405 256,267 405,405 320,267 384,267" fill="#fff"/>
+
+  <!-- Tree Trunk -->
+  <rect x="224" y="373" width="64" height="85" fill="#8B4513"/>
+
+  <!-- Axe Handle -->
+  <rect x="347" y="320" width="21" height="133" rx="5" fill="#8B4513" transform="rotate(30 357 386)"/>
+
+  <!-- Axe Blade -->
+  <path d="M387,280 L440,253 L453,280 L413,307 Z" fill="#ccc" transform="rotate(30 413 280)"/>
+</svg>

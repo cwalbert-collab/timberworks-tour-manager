@@ -1,0 +1,419 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Summary Cards */
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.summary-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summary-card-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6c757d;
+}
+
+.summary-card-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+}
+
+.summary-card-value.highlight {
+  color: #2e7d32;
+}
+
+/* Clickable card */
+.summary-card.clickable {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.summary-card.clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.summary-card.clickable:active {
+  transform: translateY(0);
+}
+
+.card-link-hint {
+  font-size: 12px;
+  color: #2e7d32;
+  margin-top: 4px;
+}
+
+/* Team Breakdown */
+.team-breakdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.team-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.team-card-header {
+  padding: 16px 20px;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.team-card.red .team-card-header {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.team-card.blue .team-card-header {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.team-card-stats {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6c757d;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Revenue Breakdown */
+.revenue-breakdown,
+.costs-overview {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.revenue-breakdown h3,
+.costs-overview h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 16px 0;
+}
+
+.breakdown-item {
+  margin-bottom: 16px;
+}
+
+.breakdown-item:last-child {
+  margin-bottom: 0;
+}
+
+.breakdown-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #495057;
+}
+
+.breakdown-bar-track {
+  height: 24px;
+  background: #f1f3f4;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.breakdown-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.breakdown-bar-fill.fees {
+  background: #2e7d32;
+}
+
+.breakdown-bar-fill.merch {
+  background: #1565c0;
+}
+
+/* Costs Overview */
+.costs-row {
+  display: flex;
+  gap: 32px;
+}
+
+.cost-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cost-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #6c757d;
+}
+
+.cost-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+.cost-value.highlight {
+  color: #2e7d32;
+}
+
+/* Follow-up Reminders */
+.follow-up-reminders {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.follow-up-reminders h3 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.overdue-count {
+  font-size: 11px;
+  font-weight: 500;
+  background: #ffebee;
+  color: #c62828;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.reminders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reminder-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-left: 3px solid transparent;
+}
+
+.reminder-item:hover {
+  background: #e9ecef;
+}
+
+.reminder-item.overdue {
+  background: #fff5f5;
+  border-left-color: #c62828;
+}
+
+.reminder-item.overdue:hover {
+  background: #ffebee;
+}
+
+.reminder-item.today {
+  background: #fff8e1;
+  border-left-color: #ef6c00;
+}
+
+.reminder-item.today:hover {
+  background: #fff3e0;
+}
+
+.reminder-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.reminder-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+.reminder-venue {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.reminder-date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #495057;
+}
+
+.reminder-date.overdue {
+  color: #c62828;
+}
+
+.reminder-date.today {
+  color: #ef6c00;
+}
+
+.reminder-icon {
+  font-size: 14px;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Export Section */
+.export-section {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.btn-export {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  background: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-export:hover {
+  background: #1b5e20;
+}
+
+.btn-export:active {
+  transform: scale(0.98);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard {
+    gap: 16px;
+  }
+
+  .summary-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .summary-card {
+    padding: 16px;
+  }
+
+  .summary-card-value {
+    font-size: 22px;
+  }
+
+  .team-breakdown {
+    grid-template-columns: 1fr;
+  }
+
+  .team-card-stats {
+    padding: 16px;
+  }
+
+  .costs-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .revenue-breakdown,
+  .costs-overview {
+    padding: 16px;
+  }
+
+  .follow-up-reminders {
+    padding: 16px;
+  }
+
+  .reminder-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .btn-export {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 20px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .summary-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card-value {
+    font-size: 26px;
+  }
+
+  /* Make clickable cards more obvious on mobile */
+  .summary-card.clickable {
+    border: 2px solid transparent;
+  }
+
+  .summary-card.clickable:active {
+    border-color: #2e7d32;
+    background: #f8fff8;
+  }
+}
