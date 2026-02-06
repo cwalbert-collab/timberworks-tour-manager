@@ -72,15 +72,30 @@ function FitBounds({ shows }) {
   return null;
 }
 
+// Helper to normalize date string to avoid timezone issues
+const normalizeDate = (dateStr) => {
+  if (!dateStr) return null;
+  // Add T12:00:00 if it's just a date string to avoid timezone midnight issues
+  return dateStr.includes('T') ? dateStr : dateStr + 'T12:00:00';
+};
+
 // Helper to get show date status based on startDate and endDate
 const getShowDateStatus = (startDate, endDate) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const start = new Date(startDate);
-  start.setHours(0, 0, 0, 0);
+  const startNorm = normalizeDate(startDate);
+  const endNorm = normalizeDate(endDate || startDate);
 
-  const end = new Date(endDate || startDate);
+  if (!startNorm) return 'past'; // No date = treat as past
+
+  const start = new Date(startNorm);
+  const end = new Date(endNorm);
+
+  // Handle invalid dates
+  if (isNaN(start.getTime()) || isNaN(end.getTime())) return 'past';
+
+  start.setHours(0, 0, 0, 0);
   end.setHours(0, 0, 0, 0);
 
   const firstMonthEnd = new Date(today);
@@ -102,8 +117,14 @@ const getShowDateStatus = (startDate, endDate) => {
 
 // Calculate duration in days
 const getDurationDays = (startDate, endDate) => {
-  const start = new Date(startDate);
-  const end = new Date(endDate || startDate);
+  const startNorm = normalizeDate(startDate);
+  const endNorm = normalizeDate(endDate || startDate);
+  if (!startNorm) return 1;
+
+  const start = new Date(startNorm);
+  const end = new Date(endNorm);
+
+  if (isNaN(start.getTime()) || isNaN(end.getTime())) return 1;
   return Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
 };
 

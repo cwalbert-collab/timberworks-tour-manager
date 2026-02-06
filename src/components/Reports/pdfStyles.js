@@ -217,10 +217,13 @@ export const formatCurrency = (amount) => {
   return `$${(amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 };
 
-// Helper function to format dates
+// Helper function to format dates (adds T12:00:00 to avoid timezone issues)
 export const formatDate = (dateStr) => {
   if (!dateStr) return 'N/A';
-  const date = new Date(dateStr);
+  // Add time component if it's just a date string to avoid timezone issues
+  const normalizedDate = dateStr.includes('T') ? dateStr : dateStr + 'T12:00:00';
+  const date = new Date(normalizedDate);
+  if (isNaN(date.getTime())) return 'Invalid date';
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -233,8 +236,13 @@ export const formatDateRange = (start, end) => {
   if (!start) return 'N/A';
   if (!end || start === end) return formatDate(start);
 
-  const startDate = new Date(start);
-  const endDate = new Date(end);
+  const startNorm = start.includes('T') ? start : start + 'T12:00:00';
+  const endNorm = end.includes('T') ? end : end + 'T12:00:00';
+  const startDate = new Date(startNorm);
+  const endDate = new Date(endNorm);
+
+  if (isNaN(startDate.getTime())) return 'Invalid date';
+  if (isNaN(endDate.getTime())) return formatDate(start);
 
   if (startDate.getMonth() === endDate.getMonth() && startDate.getFullYear() === endDate.getFullYear()) {
     return `${startDate.toLocaleDateString('en-US', { month: 'long' })} ${startDate.getDate()}-${endDate.getDate()}, ${startDate.getFullYear()}`;
