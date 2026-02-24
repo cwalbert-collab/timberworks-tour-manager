@@ -2,6 +2,8 @@
 // COMPREHENSIVE DATASET: 400+ shows from 2023-2027
 // ROUTING OPTIMIZED: Midwest-focused (2/3), weekend events local, long-term events distant
 
+import { distanceFromHomebase } from '../utils/geoUtils';
+
 // Available tours
 export const TOURS = {
   RED_TEAM: 'Red Team',
@@ -206,6 +208,24 @@ const VENUES = {
   'venue-058': { name: 'Spooner Rodeo', address: '801 N River St', city: 'Spooner', state: 'WI', zip: '54801', lat: 45.8222, lng: -91.8893, contact: 'Rodeo Rick', phone: '(715) 555-1897', email: 'rick@spoonerrodeo.com' },
   'venue-059': { name: 'Cable Car Show', address: '13470 County Hwy M', city: 'Cable', state: 'WI', zip: '54821', lat: 46.2116, lng: -91.2974, contact: 'Cable Cal', phone: '(715) 555-1924', email: 'cal@cablecarshow.com' },
   'venue-060': { name: 'Bayfield Apple Festival', address: '42 S Broad St', city: 'Bayfield', state: 'WI', zip: '54814', lat: 46.8108, lng: -90.8199, contact: 'Apple Annie', phone: '(715) 555-1862', email: 'annie@applefestival.com' },
+  'venue-061': { name: 'Hurley Iron County Fair', address: '316 Silver St', city: 'Hurley', state: 'WI', zip: '54534', lat: 46.4497, lng: -90.1862, contact: 'Iron Irene', phone: '(715) 555-1885', email: 'irene@ironcountyfair.com' },
+  'venue-062': { name: 'Ironwood Ski Jump', address: '100 Cloverland Dr', city: 'Ironwood', state: 'MI', zip: '49938', lat: 46.4547, lng: -90.1710, contact: 'Ski Steve', phone: '(906) 555-1932', email: 'steve@ironwoodski.com' },
+  'venue-063': { name: 'Marquette Ore Dock', address: '300 W Baraga Ave', city: 'Marquette', state: 'MI', zip: '49855', lat: 46.5436, lng: -87.3954, contact: 'Ore Oscar', phone: '(906) 555-1871', email: 'oscar@marquetteoredock.com' },
+  'venue-064': { name: 'Escanaba State Fair', address: '2401 12th Ave S', city: 'Escanaba', state: 'MI', zip: '49829', lat: 45.7453, lng: -87.0646, contact: 'Delta Dan', phone: '(906) 555-1863', email: 'dan@escanabafair.com' },
+  'venue-065': { name: 'Sault Ste Marie Winter Fest', address: '225 E Portage Ave', city: 'Sault Ste. Marie', state: 'MI', zip: '49783', lat: 46.4953, lng: -84.3453, contact: 'Soo Sue', phone: '(906) 555-1855', email: 'sue@saultwinterfest.com' },
+  'venue-066': { name: 'Mackinaw City Bridge Walk', address: '102 W Central Ave', city: 'Mackinaw City', state: 'MI', zip: '49701', lat: 45.7850, lng: -84.7267, contact: 'Bridge Bob', phone: '(231) 555-1957', email: 'bob@bridgewalk.com' },
+  'venue-067': { name: 'Petoskey Waterfront', address: '100 E Lake St', city: 'Petoskey', state: 'MI', zip: '49770', lat: 45.3733, lng: -84.9553, contact: 'Petoskey Pat', phone: '(231) 555-1875', email: 'pat@petoskeywaterfront.com' },
+  'venue-068': { name: 'Charlevoix Venetian Festival', address: '109 Mason St', city: 'Charlevoix', state: 'MI', zip: '49720', lat: 45.3178, lng: -85.2584, contact: 'Venetian Val', phone: '(231) 555-1926', email: 'val@venetianfest.com' },
+  'venue-069': { name: 'Manistee Forest Festival', address: '400 River St', city: 'Manistee', state: 'MI', zip: '49660', lat: 44.2442, lng: -86.3225, contact: 'Forest Fran', phone: '(231) 555-1869', email: 'fran@manisteeforest.com' },
+  'venue-070': { name: 'Ludington Salmon Derby', address: '400 W Filer St', city: 'Ludington', state: 'MI', zip: '49431', lat: 43.9531, lng: -86.4529, contact: 'Salmon Sam', phone: '(231) 555-1874', email: 'sam@salmonludington.com' },
+  'venue-071': { name: 'Muskegon Summer Celebration', address: '349 W Western Ave', city: 'Muskegon', state: 'MI', zip: '49440', lat: 43.2342, lng: -86.2484, contact: 'Summer Sue', phone: '(231) 555-1890', email: 'sue@muskegonsummer.com' },
+  'venue-073': { name: 'Kalamazoo Ribfest', address: '345 W Michigan Ave', city: 'Kalamazoo', state: 'MI', zip: '49007', lat: 42.2917, lng: -85.5872, contact: 'Rib Rick', phone: '(269) 555-1836', email: 'rick@kalamazooribfest.com' },
+  'venue-075': { name: 'Lansing Folk Festival', address: '325 S Washington Sq', city: 'Lansing', state: 'MI', zip: '48933', lat: 42.7325, lng: -84.5555, contact: 'Folk Frank', phone: '(517) 555-1847', email: 'frank@lansingfolk.com' },
+  'venue-076': { name: 'Ann Arbor Summer Festival', address: '220 E Huron St', city: 'Ann Arbor', state: 'MI', zip: '48104', lat: 42.2808, lng: -83.7430, contact: 'Arbor Amy', phone: '(734) 555-1824', email: 'amy@a2summerfest.com' },
+  'venue-077': { name: 'Flint Vehicle City', address: '1120 E Kearsley St', city: 'Flint', state: 'MI', zip: '48503', lat: 43.0125, lng: -83.6875, contact: 'Motor Mike', phone: '(810) 555-1855', email: 'mike@flintvehicle.com' },
+  'venue-079': { name: 'Bay City River Roar', address: '203 Washington Ave', city: 'Bay City', state: 'MI', zip: '48708', lat: 43.5945, lng: -83.8889, contact: 'Roar Ron', phone: '(989) 555-1837', email: 'ron@baycityroar.com' },
+  'venue-085': { name: 'Moorhead Scandinavian Days', address: '202 1st Ave N', city: 'Moorhead', state: 'MN', zip: '56560', lat: 46.8739, lng: -96.7678, contact: 'Scandinavian Steve', phone: '(218) 555-1872', email: 'steve@moorheadscandi.com' },
+  'venue-086': { name: 'Detroit Lakes WeFest', address: '34830 County Hwy 34', city: 'Detroit Lakes', state: 'MN', zip: '56501', lat: 46.8172, lng: -95.8453, contact: 'WeFest Wendy', phone: '(218) 555-1983', email: 'wendy@wefest.com' },
   'venue-081': { name: 'Bemidji Paul Bunyan Days', address: '300 Bemidji Ave N', city: 'Bemidji', state: 'MN', zip: '56601', lat: 47.4736, lng: -94.8803, contact: 'Bunyan Bill', phone: '(218) 555-1896', email: 'bill@paulbunyandays.com' },
   'venue-082': { name: 'Brainerd Lakes Festival', address: '501 Laurel St', city: 'Brainerd', state: 'MN', zip: '56401', lat: 46.3580, lng: -94.2008, contact: 'Lake Larry', phone: '(218) 555-1871', email: 'larry@brainerdlakes.com' },
   'venue-083': { name: 'Alexandria Vikingland', address: '206 Broadway St', city: 'Alexandria', state: 'MN', zip: '56308', lat: 45.8852, lng: -95.3775, contact: 'Viking Vic', phone: '(320) 555-1858', email: 'vic@vikingland.com' },
@@ -242,6 +262,7 @@ export function formatDateRange(startDate, endDate) {
 // Default standard day rate (per person per day)
 export const STANDARD_DAY_RATE = 200;
 export const IRS_MILEAGE_RATE = 0.67; // 2025 IRS standard mileage rate
+export const DEFAULT_HOTEL_RATE = 140; // Default per-room nightly hotel rate
 
 // Calculate derived metrics for a show
 export function calculateShowMetrics(show) {
@@ -255,15 +276,22 @@ export function calculateShowMetrics(show) {
   const mileage = show.mileage || 0;
   const mileageCost = Math.round(mileage * IRS_MILEAGE_RATE * 100) / 100;
 
+  // Hotel cost: rate * rooms * nights (all editable per show)
+  const hotelRate = show.hotelRate || 0;
+  const hotelRooms = show.hotelRooms || 0;
+  const hotelNights = show.hotelNights || 0;
+  const hotelCost = Math.round(hotelRate * hotelRooms * hotelNights * 100) / 100;
+
   const totalRevenue = (show.performanceFee || 0) + (show.merchandiseSales || 0);
   const totalExpenses = (show.materialsUsed || 0) + (show.expenses || 0);
-  const profit = totalRevenue - totalExpenses - dayRateCost - mileageCost;
+  const profit = totalRevenue - totalExpenses - dayRateCost - mileageCost - hotelCost;
 
   return {
     ...show,
     durationDays,
     dayRateCost,
     mileageCost,
+    hotelCost,
     totalRevenue,
     profit
   };
@@ -272,6 +300,17 @@ export function calculateShowMetrics(show) {
 // Helper to create a show object
 function createShow(id, tour, venueId, startDate, endDate, fee, merch, materials, expenses, notes, status = 'completed', dayRateCount = 0) {
   const venue = VENUES[venueId] || VENUES['venue-001'];
+
+  // Calculate round-trip mileage from homebase
+  const oneWay = distanceFromHomebase(venue.lat, venue.lng);
+  const mileage = Math.round(oneWay * 2);
+
+  // Calculate hotel estimates: duration - 1 nights, 3 rooms default
+  const start = new Date(startDate + 'T12:00:00');
+  const end = new Date((endDate || startDate) + 'T12:00:00');
+  const durationDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+  const hotelNights = Math.max(durationDays - 1, 0);
+
   return {
     id,
     tour,
@@ -296,7 +335,11 @@ function createShow(id, tour, venueId, startDate, endDate, fee, merch, materials
     contactEmail: venue.email,
     notes,
     status,
-    dayRateCount
+    dayRateCount,
+    mileage,
+    hotelRate: DEFAULT_HOTEL_RATE,
+    hotelRooms: 3,
+    hotelNights
   };
 }
 

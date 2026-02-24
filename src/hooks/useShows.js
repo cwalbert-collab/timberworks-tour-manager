@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { sampleShows, calculateShowMetrics } from '../data/sampleData';
+import { sampleShows, calculateShowMetrics, DEFAULT_HOTEL_RATE } from '../data/sampleData';
+import { distanceFromHomebase } from '../utils/geoUtils';
 
 const STORAGE_KEY = 'lumberjack-tours-shows';
 
@@ -10,20 +11,45 @@ export function useShows() {
   // Load shows from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
+    let rawShows;
     if (stored) {
       try {
-        const parsed = JSON.parse(stored);
-        // Calculate metrics for each show
-        setShows(parsed.map(calculateShowMetrics));
+        rawShows = JSON.parse(stored);
       } catch (e) {
         console.error('Failed to parse stored shows:', e);
-        // Fall back to sample data
-        setShows(sampleShows.map(calculateShowMetrics));
+        rawShows = sampleShows;
       }
     } else {
-      // First time: use sample data
-      setShows(sampleShows.map(calculateShowMetrics));
+      rawShows = sampleShows;
     }
+
+    // Auto-fill missing mileage/hotel estimates from coordinates and duration
+    const filled = rawShows.map(show => {
+      const needsMileage = !show.mileage || show.mileage === 0;
+      const needsHotel = !show.hotelNights && show.hotelNights !== 0;
+
+      if (!needsMileage && !needsHotel) return show;
+
+      const updated = { ...show };
+
+      if (needsMileage && show.latitude && show.longitude) {
+        const oneWay = distanceFromHomebase(show.latitude, show.longitude);
+        updated.mileage = Math.round(oneWay * 2);
+      }
+
+      if (needsHotel) {
+        const start = new Date(show.startDate);
+        const end = new Date(show.endDate || show.startDate);
+        const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+        updated.hotelRate = show.hotelRate || DEFAULT_HOTEL_RATE;
+        updated.hotelRooms = show.hotelRooms || 3;
+        updated.hotelNights = Math.max(days - 1, 0);
+      }
+
+      return updated;
+    });
+
+    setShows(filled.map(calculateShowMetrics));
     setIsLoaded(true);
   }, []);
 
@@ -31,7 +57,7 @@ export function useShows() {
   useEffect(() => {
     if (isLoaded) {
       // Store without calculated fields to save space
-      const toStore = shows.map(({ totalRevenue, profit, durationDays, dayRateCost, mileageCost, ...rest }) => rest);
+      const toStore = shows.map(({ totalRevenue, profit, durationDays, dayRateCost, mileageCost, hotelCost, ...rest }) => rest);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
     }
   }, [shows, isLoaded]);

@@ -70,6 +70,21 @@ const generateICSContent = (show, venue) => {
   return icsContent;
 };
 
+// Generate Marriott search URL pre-filled with show dates and location
+const generateMarriottUrl = (show, venue) => {
+  const checkin = show.startDate; // YYYY-MM-DD format
+  const start = new Date(show.startDate + 'T00:00:00');
+  const end = show.endDate ? new Date(show.endDate + 'T00:00:00') : start;
+  const durationDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+  // Checkout is last show day (no hotel needed after last performance)
+  const checkout = show.endDate || show.startDate;
+  const city = venue?.city || show.city || '';
+  const state = venue?.state || show.state || '';
+  const location = encodeURIComponent(`${city}, ${state}`);
+  const rooms = show.hotelRooms || 3;
+  return `https://www.marriott.com/search/default.mi?destinationAddress=${location}&checkInDate=${checkin}&checkOutDate=${checkout}&roomCount=${rooms}&guestCount=1`;
+};
+
 export default function Calendar({
   shows,
   venues = [],
@@ -399,8 +414,27 @@ export default function Calendar({
                     </div>
                   )}
 
+                  {/* Hotel Info */}
+                  {(show.hotelCost > 0 || show.hotelNights > 0) && (
+                    <div className="detail-show-hotel">
+                      <span className="link-icon">🏨</span>
+                      {show.hotelRooms} room{show.hotelRooms !== 1 ? 's' : ''} x {show.hotelNights} night{show.hotelNights !== 1 ? 's' : ''} @ ${show.hotelRate}/night = <strong>${show.hotelCost?.toLocaleString()}</strong>
+                    </div>
+                  )}
+
                   {/* Calendar Actions */}
                   <div className="detail-show-actions">
+                    <button
+                      className="btn-calendar marriott"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.open(generateMarriottUrl(show, venue), '_blank');
+                      }}
+                      title="Search Marriott hotels near this venue"
+                    >
+                      <span className="btn-icon">🏨</span>
+                      Book Marriott
+                    </button>
                     <button
                       className="btn-calendar outlook"
                       onClick={(e) => handleAddToOutlook(e, show)}

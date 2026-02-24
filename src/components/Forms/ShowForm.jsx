@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { TOURS, IRS_MILEAGE_RATE } from '../../data/sampleData';
+import { TOURS, IRS_MILEAGE_RATE, DEFAULT_HOTEL_RATE } from '../../data/sampleData';
 import { validateVenue, validateContact } from '../../utils/validation';
 import { distanceFromHomebase } from '../../utils/geoUtils';
 import './ShowForm.css';
@@ -18,6 +18,9 @@ const emptyShow = {
   expenses: '',
   dayRateCount: 0,
   mileage: '',
+  hotelRate: DEFAULT_HOTEL_RATE,
+  hotelRooms: '',
+  hotelNights: '',
   notes: ''
 };
 
@@ -131,7 +134,10 @@ export default function ShowForm({
         materialsUsed: show.materialsUsed || '',
         expenses: show.expenses || '',
         dayRateCount: show.dayRateCount || 0,
-        mileage: show.mileage || ''
+        mileage: show.mileage || '',
+        hotelRate: show.hotelRate || DEFAULT_HOTEL_RATE,
+        hotelRooms: show.hotelRooms || '',
+        hotelNights: show.hotelNights || ''
       });
       setVenueMode('select');
       setContactMode('select');
@@ -345,7 +351,10 @@ export default function ShowForm({
       materialsUsed: parseFloat(formData.materialsUsed) || 0,
       expenses: parseFloat(formData.expenses) || 0,
       dayRateCount: parseInt(formData.dayRateCount) || 0,
-      mileage: parseInt(formData.mileage) || 0
+      mileage: parseInt(formData.mileage) || 0,
+      hotelRate: parseFloat(formData.hotelRate) || 0,
+      hotelRooms: parseInt(formData.hotelRooms) || 0,
+      hotelNights: parseInt(formData.hotelNights) || 0
     };
 
     // Update employee assignments
@@ -864,6 +873,87 @@ export default function ShowForm({
               </label>
               <div className="form-field" />
             </div>
+          </div>
+
+          {/* Hotel / Travel */}
+          <div className="form-section">
+            <h3>Hotel / Travel</h3>
+            <div className="form-row three-col">
+              <label className="form-field">
+                <span>Rate / Night</span>
+                <input
+                  type="number"
+                  name="hotelRate"
+                  value={formData.hotelRate}
+                  onChange={handleChange}
+                  min="0"
+                  step="1"
+                  placeholder="140"
+                />
+              </label>
+              <label className="form-field">
+                <span>Rooms</span>
+                <div className="mileage-input-row">
+                  <input
+                    type="number"
+                    name="hotelRooms"
+                    value={formData.hotelRooms}
+                    onChange={handleChange}
+                    min="0"
+                    placeholder="0"
+                  />
+                  {assignedEmployeeIds.length > 0 && (
+                    <button
+                      type="button"
+                      className="btn-estimate-mileage"
+                      onClick={() => setFormData(prev => ({ ...prev, hotelRooms: assignedEmployeeIds.length }))}
+                      title={`Set to crew count (${assignedEmployeeIds.length})`}
+                    >
+                      Crew
+                    </button>
+                  )}
+                </div>
+              </label>
+              <label className="form-field">
+                <span>Nights</span>
+                <div className="mileage-input-row">
+                  <input
+                    type="number"
+                    name="hotelNights"
+                    value={formData.hotelNights}
+                    onChange={handleChange}
+                    min="0"
+                    placeholder="0"
+                  />
+                  {formData.startDate && (
+                    <button
+                      type="button"
+                      className="btn-estimate-mileage"
+                      onClick={() => {
+                        const start = new Date(formData.startDate);
+                        const end = formData.endDate ? new Date(formData.endDate) : start;
+                        const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+                        setFormData(prev => ({ ...prev, hotelNights: Math.max(days - 1, 0) }));
+                      }}
+                      title="Estimate from show duration - 1"
+                    >
+                      Est.
+                    </button>
+                  )}
+                </div>
+              </label>
+            </div>
+            <span className="field-hint">
+              {(() => {
+                const rate = parseFloat(formData.hotelRate) || 0;
+                const rooms = parseInt(formData.hotelRooms) || 0;
+                const nights = parseInt(formData.hotelNights) || 0;
+                const total = rate * rooms * nights;
+                return total > 0
+                  ? `${rooms} room${rooms !== 1 ? 's' : ''} × ${nights} night${nights !== 1 ? 's' : ''} × $${rate} = $${total.toLocaleString()}`
+                  : 'Fill in rate, rooms, and nights to estimate hotel cost';
+              })()}
+            </span>
           </div>
 
           {/* Notes */}

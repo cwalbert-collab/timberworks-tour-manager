@@ -11,6 +11,7 @@ import Calendar from './components/Calendar/Calendar';
 import EmployeeList from './components/Employees/EmployeeList';
 import Insights from './components/Insights/Insights';
 import Reports from './components/Reports/Reports';
+import ProfitLoss from './components/ProfitLoss/ProfitLoss';
 import TabNavigation from './components/TabNavigation/TabNavigation';
 import GlobalSearch from './components/GlobalSearch/GlobalSearch';
 import InstallPrompt from './components/PWA/InstallPrompt';
@@ -23,7 +24,9 @@ import { useDirectory } from './hooks/useDirectory';
 import { useEmployees } from './hooks/useEmployees';
 import { useEtsy } from './hooks/useEtsy';
 import { useTheme } from './hooks/useTheme';
-import { formatDateRange } from './data/sampleData';
+import { useFixedCosts } from './hooks/useFixedCosts';
+import { formatDateRange, DEFAULT_HOTEL_RATE } from './data/sampleData';
+import { distanceFromHomebase } from './utils/geoUtils';
 import './App.css';
 
 function App() {
@@ -95,6 +98,9 @@ function App() {
 
   // Theme management
   const { theme, toggleTheme } = useTheme();
+
+  // Fixed costs for P&L
+  const { fixedCosts, totalFixedCosts, updateFixedCost, addFixedCost, removeFixedCost } = useFixedCosts();
 
   const [selectedShow, setSelectedShow] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -242,6 +248,49 @@ function App() {
     setShowDeleteConfirm(null);
   };
 
+  // Bulk fill mileage and hotel costs for shows missing them
+  const handleBulkFillTravel = () => {
+    let updated = 0;
+    shows.forEach(show => {
+      const needsMileage = !show.mileage || show.mileage === 0;
+      const needsHotel = (!show.hotelNights || show.hotelNights === 0) && (!show.hotelRooms || show.hotelRooms === 0);
+
+      if (!needsMileage && !needsHotel) return;
+
+      const venue = venueMap.get(show.venueId);
+      const updates = { ...show };
+
+      // Auto-fill mileage from venue coordinates
+      if (needsMileage && venue?.latitude && venue?.longitude) {
+        const oneWay = distanceFromHomebase(venue.latitude, venue.longitude);
+        updates.mileage = Math.round(oneWay * 2);
+      }
+
+      // Auto-fill hotel from duration and crew assignments
+      if (needsHotel) {
+        const start = new Date(show.startDate);
+        const end = show.endDate ? new Date(show.endDate) : start;
+        const durationDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+        const nights = Math.max(durationDays - 1, 0);
+
+        if (nights > 0) {
+          const assignments = getShowAssignments ? getShowAssignments(show.id) : [];
+          const crewCount = assignments.length || 3; // Default 3 if no assignments
+
+          updates.hotelRate = show.hotelRate || DEFAULT_HOTEL_RATE;
+          updates.hotelRooms = crewCount;
+          updates.hotelNights = nights;
+        }
+      }
+
+      if (updates.mileage !== show.mileage || updates.hotelRooms !== show.hotelRooms || updates.hotelNights !== show.hotelNights) {
+        updateShow(updates);
+        updated++;
+      }
+    });
+    return updated;
+  };
+
   if (!isLoaded || !revenueLoaded || !directoryLoaded || !employeesLoaded) {
     return <div className="loading">Loading...</div>;
   }
@@ -374,6 +423,7 @@ function App() {
             contacts={contacts}
             venues={venues}
             employees={employees}
+            totalFixedCosts={totalFixedCosts}
             onNavigateToRevenue={() => setActiveTab('revenue')}
             onNavigateToContact={(contactId) => handleNavigateToDirectory('contact', contactId)}
           />
@@ -455,6 +505,20 @@ function App() {
           <Insights
             shows={shows}
             venues={venues}
+          />
+        )}
+
+        {/* Profit & Loss Tab */}
+        {activeTab === 'profit-loss' && (
+          <ProfitLoss
+            shows={shows}
+            employees={employees}
+            fixedCosts={fixedCosts}
+            totalFixedCosts={totalFixedCosts}
+            onUpdateFixedCost={updateFixedCost}
+            onAddFixedCost={addFixedCost}
+            onRemoveFixedCost={removeFixedCost}
+            onBulkFillTravel={handleBulkFillTravel}
           />
         )}
 

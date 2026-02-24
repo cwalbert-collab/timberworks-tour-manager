@@ -7,6 +7,7 @@ const TABS = [
   { id: 'calendar', label: 'Calendar', icon: '📅', primary: true },
   { id: 'employees', label: 'Team', icon: '👥', primary: true },
   { id: 'insights', label: 'Insights', icon: '🧠', primary: false },
+  { id: 'profit-loss', label: 'P&L', icon: '📈', primary: false },
   { id: 'revenue', label: 'Revenue', icon: '💰', primary: false },
   { id: 'reports', label: 'Reports', icon: '📄', primary: false },
   { id: 'directory', label: 'Directory', icon: '📇', primary: false },
