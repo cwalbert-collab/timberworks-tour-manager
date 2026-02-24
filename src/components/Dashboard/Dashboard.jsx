@@ -49,6 +49,7 @@ export default function Dashboard({ shows, contacts = [], venues = [], employees
     const totalFees = shows.reduce((sum, s) => sum + (s.performanceFee || 0), 0);
     const totalExpenses = shows.reduce((sum, s) => sum + (s.expenses || 0) + (s.materialsUsed || 0), 0);
     const totalDayRateCost = shows.reduce((sum, s) => sum + (s.dayRateCost || 0), 0);
+    const totalMileageCost = shows.reduce((sum, s) => sum + (s.mileageCost || 0), 0);
     const daysWorked = calculateDaysWorked(shows);
 
     // Count unique years for payroll spread
@@ -57,10 +58,10 @@ export default function Dashboard({ shows, contacts = [], venues = [], employees
 
     // Payroll share per show: total payroll / total show-days * this show's days
     const payrollPerDay = daysWorked > 0 ? totalPayroll / daysWorked : 0;
-    const totalProfit = totalRevenue - totalExpenses - totalDayRateCost - totalPayroll;
+    const totalProfit = totalRevenue - totalExpenses - totalDayRateCost - totalMileageCost - totalPayroll;
     const avgProfit = totalShows > 0 ? totalProfit / totalShows : 0;
 
-    return { totalShows, totalRevenue, totalProfit, totalMerch, totalFees, totalExpenses, totalDayRateCost, totalPayroll, avgProfit, daysWorked, payrollPerDay };
+    return { totalShows, totalRevenue, totalProfit, totalMerch, totalFees, totalExpenses, totalDayRateCost, totalMileageCost, totalPayroll, avgProfit, daysWorked, payrollPerDay };
   }, [shows, annualPayroll]);
 
   // Calculate metrics for SELECTED YEAR
@@ -71,14 +72,15 @@ export default function Dashboard({ shows, contacts = [], venues = [], employees
     const totalFees = showsByYear.reduce((sum, s) => sum + (s.performanceFee || 0), 0);
     const totalExpenses = showsByYear.reduce((sum, s) => sum + (s.expenses || 0) + (s.materialsUsed || 0), 0);
     const totalDayRateCost = showsByYear.reduce((sum, s) => sum + (s.dayRateCost || 0), 0);
+    const totalMileageCost = showsByYear.reduce((sum, s) => sum + (s.mileageCost || 0), 0);
     const daysWorked = calculateDaysWorked(showsByYear);
 
     // Payroll share: spread annual payroll across show-days for this year
     const payrollPerDay = daysWorked > 0 ? annualPayroll / daysWorked : 0;
-    const totalProfit = totalRevenue - totalExpenses - totalDayRateCost - annualPayroll;
+    const totalProfit = totalRevenue - totalExpenses - totalDayRateCost - totalMileageCost - annualPayroll;
     const avgProfit = totalShows > 0 ? totalProfit / totalShows : 0;
 
-    return { totalShows, totalRevenue, totalProfit, totalMerch, totalFees, totalExpenses, totalDayRateCost, annualPayroll, avgProfit, daysWorked, payrollPerDay };
+    return { totalShows, totalRevenue, totalProfit, totalMerch, totalFees, totalExpenses, totalDayRateCost, totalMileageCost, annualPayroll, avgProfit, daysWorked, payrollPerDay };
   }, [showsByYear, annualPayroll]);
 
   // Calculate per-team metrics for SELECTED YEAR
@@ -93,10 +95,11 @@ export default function Dashboard({ shows, contacts = [], venues = [], employees
       const merch = teamShows.reduce((sum, s) => sum + (s.merchandiseSales || 0), 0);
       const expenses = teamShows.reduce((sum, s) => sum + (s.expenses || 0) + (s.materialsUsed || 0), 0);
       const dayRateCost = teamShows.reduce((sum, s) => sum + (s.dayRateCost || 0), 0);
+      const mileageCost = teamShows.reduce((sum, s) => sum + (s.mileageCost || 0), 0);
       const daysWorked = calculateDaysWorked(teamShows);
       // Proportional payroll share based on days worked
       const payrollShare = totalDaysAllTeams > 0 ? annualPayroll * (daysWorked / totalDaysAllTeams) : 0;
-      const profit = revenue - expenses - dayRateCost - payrollShare;
+      const profit = revenue - expenses - dayRateCost - mileageCost - payrollShare;
       const avgPerShow = showCount > 0 ? profit / showCount : 0;
       const uniqueVenues = new Set(teamShows.map(s => s.venueId)).size;
       return { showCount, revenue, profit, merch, daysWorked, avgPerShow, uniqueVenues };
@@ -122,9 +125,10 @@ export default function Dashboard({ shows, contacts = [], venues = [], employees
       const merch = teamShows.reduce((sum, s) => sum + (s.merchandiseSales || 0), 0);
       const expenses = teamShows.reduce((sum, s) => sum + (s.expenses || 0) + (s.materialsUsed || 0), 0);
       const dayRateCost = teamShows.reduce((sum, s) => sum + (s.dayRateCost || 0), 0);
+      const mileageCost = teamShows.reduce((sum, s) => sum + (s.mileageCost || 0), 0);
       const daysWorked = calculateDaysWorked(teamShows);
       const payrollShare = totalDaysAllTeams > 0 ? totalPayroll * (daysWorked / totalDaysAllTeams) : 0;
-      const profit = revenue - expenses - dayRateCost - payrollShare;
+      const profit = revenue - expenses - dayRateCost - mileageCost - payrollShare;
       const avgPerShow = showCount > 0 ? profit / showCount : 0;
       const uniqueVenues = new Set(teamShows.map(s => s.venueId)).size;
       return { showCount, revenue, profit, merch, daysWorked, avgPerShow, uniqueVenues };
@@ -428,8 +432,12 @@ export default function Dashboard({ shows, contacts = [], venues = [], employees
             <span className="cost-value">{formatCurrency(yearlyMetrics.totalExpenses)}</span>
           </div>
           <div className="cost-item">
+            <span className="cost-label">Mileage</span>
+            <span className="cost-value">{formatCurrency(yearlyMetrics.totalMileageCost)}</span>
+          </div>
+          <div className="cost-item">
             <span className="cost-label">Total Costs</span>
-            <span className="cost-value">{formatCurrency(annualPayroll + yearlyMetrics.totalDayRateCost + yearlyMetrics.totalExpenses)}</span>
+            <span className="cost-value">{formatCurrency(annualPayroll + yearlyMetrics.totalDayRateCost + yearlyMetrics.totalExpenses + yearlyMetrics.totalMileageCost)}</span>
           </div>
         </div>
         <div className="costs-row">

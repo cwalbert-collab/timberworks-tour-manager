@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
-import { TOURS } from '../../data/sampleData';
+import { TOURS, IRS_MILEAGE_RATE } from '../../data/sampleData';
 import { validateVenue, validateContact } from '../../utils/validation';
+import { distanceFromHomebase } from '../../utils/geoUtils';
 import './ShowForm.css';
 
 const emptyShow = {
@@ -16,8 +17,37 @@ const emptyShow = {
   materialsUsed: '',
   expenses: '',
   dayRateCount: 0,
+  mileage: '',
   notes: ''
 };
+
+const SHOW_TEMPLATES = [
+  {
+    label: 'Single Day Show',
+    description: '1 day — county fair, festival, one-off gig',
+    defaults: { performanceFee: 2500, merchandiseSales: 150, materialsUsed: 150, expenses: 200, dayRateCount: 0 }
+  },
+  {
+    label: 'Weekend Show (Thu–Sun)',
+    description: '4 days — typical weekend booking',
+    defaults: { performanceFee: 4800, merchandiseSales: 300, materialsUsed: 315, expenses: 360, dayRateCount: 0 }
+  },
+  {
+    label: 'State Fair (2+ Weeks)',
+    description: '10–14 days — large state/county fair run',
+    defaults: { performanceFee: 25000, merchandiseSales: 3000, materialsUsed: 2000, expenses: 3000, dayRateCount: 2 }
+  },
+  {
+    label: 'Corporate Expo (1 Week)',
+    description: '5–7 days — expo center or corporate event',
+    defaults: { performanceFee: 12000, merchandiseSales: 1000, materialsUsed: 800, expenses: 1200, dayRateCount: 1 }
+  },
+  {
+    label: 'Store Opening (3–10 Days)',
+    description: '3–10 days — retail grand opening, promo event',
+    defaults: { performanceFee: 8000, merchandiseSales: 600, materialsUsed: 500, expenses: 800, dayRateCount: 1 }
+  }
+];
 
 const emptyVenue = {
   name: '',
@@ -54,6 +84,7 @@ export default function ShowForm({
   onAddVenue,
   onAddContact,
   employees = [],
+  shows = [],
   getShowAssignments,
   onUpdateShowAssignments
 }) {
@@ -99,7 +130,8 @@ export default function ShowForm({
         merchandiseSales: show.merchandiseSales || '',
         materialsUsed: show.materialsUsed || '',
         expenses: show.expenses || '',
-        dayRateCount: show.dayRateCount || 0
+        dayRateCount: show.dayRateCount || 0,
+        mileage: show.mileage || ''
       });
       setVenueMode('select');
       setContactMode('select');
@@ -181,6 +213,36 @@ export default function ShowForm({
         return `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`);
       });
   }, [employees]);
+
+  // Check for date conflicts: which employees are already booked on the selected dates
+  const employeeConflicts = useMemo(() => {
+    if (!formData.startDate || !getShowAssignments) return new Map();
+
+    const showStart = new Date(formData.startDate + 'T00:00:00');
+    const showEnd = formData.endDate ? new Date(formData.endDate + 'T00:00:00') : showStart;
+    const currentShowId = show?.id;
+    const conflicts = new Map();
+
+    // Check each show for date overlap
+    shows.forEach(s => {
+      if (s.id === currentShowId) return; // Skip the show being edited
+      const sStart = new Date(s.startDate + 'T00:00:00');
+      const sEnd = s.endDate ? new Date(s.endDate + 'T00:00:00') : sStart;
+
+      // Check overlap: show ranges overlap if start <= otherEnd AND end >= otherStart
+      if (showStart <= sEnd && showEnd >= sStart) {
+        const assignments = getShowAssignments(s.id);
+        assignments.forEach(a => {
+          if (!conflicts.has(a.employeeId)) {
+            conflicts.set(a.employeeId, []);
+          }
+          conflicts.get(a.employeeId).push(s.venueName || s.id);
+        });
+      }
+    });
+
+    return conflicts;
+  }, [formData.startDate, formData.endDate, shows, show, getShowAssignments]);
 
   const validate = () => {
     const newErrors = {};
@@ -282,7 +344,8 @@ export default function ShowForm({
       merchandiseSales: parseFloat(formData.merchandiseSales) || 0,
       materialsUsed: parseFloat(formData.materialsUsed) || 0,
       expenses: parseFloat(formData.expenses) || 0,
-      dayRateCount: parseInt(formData.dayRateCount) || 0
+      dayRateCount: parseInt(formData.dayRateCount) || 0,
+      mileage: parseInt(formData.mileage) || 0
     };
 
     // Update employee assignments
@@ -304,6 +367,32 @@ export default function ShowForm({
         </div>
 
         <form onSubmit={handleSubmit} className="show-form">
+          {/* Show Template - only for new shows */}
+          {!isEditing && (
+            <div className="form-section template-section">
+              <h3>Quick Start Template</h3>
+              <div className="template-grid">
+                {SHOW_TEMPLATES.map((template, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    className="template-btn"
+                    onClick={() => {
+                      setFormData(prev => ({
+                        ...prev,
+                        ...template.defaults
+                      }));
+                    }}
+                  >
+                    <span className="template-label">{template.label}</span>
+                    <span className="template-desc">{template.description}</span>
+                  </button>
+                ))}
+              </div>
+              <p className="section-hint">Pre-fills financial estimates. You can adjust all values below.</p>
+            </div>
+          )}
+
           {/* Tour Selection */}
           <div className="form-section">
             <h3>Tour Assignment</h3>
@@ -602,12 +691,14 @@ export default function ShowForm({
               <div className="employee-assignment-grid">
                 {activeEmployees.map(emp => {
                   const isAssigned = assignedEmployeeIds.includes(emp.id);
+                  const conflict = employeeConflicts.get(emp.id);
                   const teamColors = { red: '#c62828', blue: '#1565c0', flex: '#7b1fa2' };
                   return (
                     <label
                       key={emp.id}
-                      className={`employee-assignment-item ${isAssigned ? 'assigned' : ''}`}
+                      className={`employee-assignment-item ${isAssigned ? 'assigned' : ''} ${conflict ? 'has-conflict' : ''}`}
                       style={{ borderLeftColor: teamColors[emp.team] || '#757575' }}
+                      title={conflict ? `Already booked: ${conflict.join(', ')}` : ''}
                     >
                       <input
                         type="checkbox"
@@ -617,9 +708,13 @@ export default function ShowForm({
                       <div className="employee-assignment-info">
                         <span className="employee-assignment-name">
                           {emp.firstName} {emp.lastName}
+                          {conflict && <span className="conflict-badge">Booked</span>}
                         </span>
                         <span className="employee-assignment-role">
-                          {emp.role} • {emp.team.charAt(0).toUpperCase() + emp.team.slice(1)} Team
+                          {conflict
+                            ? conflict.join(', ')
+                            : `${emp.role} • ${emp.team.charAt(0).toUpperCase() + emp.team.slice(1)} Team`
+                          }
                         </span>
                       </div>
                     </label>
@@ -735,6 +830,39 @@ export default function ShowForm({
                   placeholder="0.00"
                 />
               </label>
+            </div>
+            <div className="form-row two-col">
+              <label className="form-field">
+                <span>Round-Trip Mileage</span>
+                <div className="mileage-input-row">
+                  <input
+                    type="number"
+                    name="mileage"
+                    value={formData.mileage}
+                    onChange={handleChange}
+                    min="0"
+                    placeholder="0"
+                  />
+                  {selectedVenue?.latitude && selectedVenue?.longitude && (
+                    <button
+                      type="button"
+                      className="btn-estimate-mileage"
+                      onClick={() => {
+                        const oneWay = distanceFromHomebase(selectedVenue.latitude, selectedVenue.longitude);
+                        const roundTrip = Math.round(oneWay * 2);
+                        setFormData(prev => ({ ...prev, mileage: roundTrip }));
+                      }}
+                      title="Estimate round-trip from Hayward, WI"
+                    >
+                      Est.
+                    </button>
+                  )}
+                </div>
+                <span className="field-hint">
+                  {formData.mileage ? `Cost: $${(formData.mileage * IRS_MILEAGE_RATE).toFixed(0)} @ $${IRS_MILEAGE_RATE}/mi` : `$${IRS_MILEAGE_RATE}/mi IRS rate`}
+                </span>
+              </label>
+              <div className="form-field" />
             </div>
           </div>
 

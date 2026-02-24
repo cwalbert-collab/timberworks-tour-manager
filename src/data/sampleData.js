@@ -241,6 +241,7 @@ export function formatDateRange(startDate, endDate) {
 
 // Default standard day rate (per person per day)
 export const STANDARD_DAY_RATE = 200;
+export const IRS_MILEAGE_RATE = 0.67; // 2025 IRS standard mileage rate
 
 // Calculate derived metrics for a show
 export function calculateShowMetrics(show) {
@@ -251,14 +252,18 @@ export function calculateShowMetrics(show) {
   const dayRateCount = show.dayRateCount || 0;
   const dayRateCost = dayRateCount * STANDARD_DAY_RATE * durationDays;
 
+  const mileage = show.mileage || 0;
+  const mileageCost = Math.round(mileage * IRS_MILEAGE_RATE * 100) / 100;
+
   const totalRevenue = (show.performanceFee || 0) + (show.merchandiseSales || 0);
   const totalExpenses = (show.materialsUsed || 0) + (show.expenses || 0);
-  const profit = totalRevenue - totalExpenses - dayRateCost;
+  const profit = totalRevenue - totalExpenses - dayRateCost - mileageCost;
 
   return {
     ...show,
     durationDays,
     dayRateCost,
+    mileageCost,
     totalRevenue,
     profit
   };

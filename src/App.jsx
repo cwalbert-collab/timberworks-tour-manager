@@ -609,6 +609,7 @@ function App() {
           onAddVenue={addVenue}
           onAddContact={addContact}
           employees={employees}
+          shows={shows}
           getShowAssignments={getShowAssignments}
           onUpdateShowAssignments={updateShowAssignments}
         />
