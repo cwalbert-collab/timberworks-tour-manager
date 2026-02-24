@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
 import { exportDashboardSummary } from '../../utils/exportUtils';
+import { STANDARD_DAY_RATE } from '../../data/sampleData';
 import './Dashboard.css';
 
-export default function Dashboard({ shows, contacts = [], venues = [], onNavigateToRevenue, onNavigateToContact }) {
+export default function Dashboard({ shows, contacts = [], venues = [], employees = [], onNavigateToRevenue, onNavigateToContact }) {
   // Get available years from data
   const availableYears = useMemo(() => {
     const years = new Set();
@@ -33,45 +34,69 @@ export default function Dashboard({ shows, contacts = [], venues = [], onNavigat
     return shows.filter(s => new Date(s.startDate).getFullYear() === selectedYear);
   }, [shows, selectedYear]);
 
+  // Calculate annual payroll from full-time employees
+  const annualPayroll = useMemo(() => {
+    return employees
+      .filter(e => e.isActive && e.employmentType === 'full_time')
+      .reduce((sum, e) => sum + (e.annualSalary || 0), 0);
+  }, [employees]);
+
   // Calculate aggregate metrics for ALL TIME
   const allTimeMetrics = useMemo(() => {
     const totalShows = shows.length;
     const totalRevenue = shows.reduce((sum, s) => sum + (s.totalRevenue || 0), 0);
-    const totalProfit = shows.reduce((sum, s) => sum + (s.profit || 0), 0);
     const totalMerch = shows.reduce((sum, s) => sum + (s.merchandiseSales || 0), 0);
     const totalFees = shows.reduce((sum, s) => sum + (s.performanceFee || 0), 0);
     const totalExpenses = shows.reduce((sum, s) => sum + (s.expenses || 0) + (s.materialsUsed || 0), 0);
-    const avgProfit = totalShows > 0 ? totalProfit / totalShows : 0;
+    const totalDayRateCost = shows.reduce((sum, s) => sum + (s.dayRateCost || 0), 0);
     const daysWorked = calculateDaysWorked(shows);
 
-    return { totalShows, totalRevenue, totalProfit, totalMerch, totalFees, totalExpenses, avgProfit, daysWorked };
-  }, [shows]);
+    // Count unique years for payroll spread
+    const yearsSpanned = new Set(shows.map(s => new Date(s.startDate).getFullYear())).size || 1;
+    const totalPayroll = annualPayroll * yearsSpanned;
+
+    // Payroll share per show: total payroll / total show-days * this show's days
+    const payrollPerDay = daysWorked > 0 ? totalPayroll / daysWorked : 0;
+    const totalProfit = totalRevenue - totalExpenses - totalDayRateCost - totalPayroll;
+    const avgProfit = totalShows > 0 ? totalProfit / totalShows : 0;
+
+    return { totalShows, totalRevenue, totalProfit, totalMerch, totalFees, totalExpenses, totalDayRateCost, totalPayroll, avgProfit, daysWorked, payrollPerDay };
+  }, [shows, annualPayroll]);
 
   // Calculate metrics for SELECTED YEAR
   const yearlyMetrics = useMemo(() => {
     const totalShows = showsByYear.length;
     const totalRevenue = showsByYear.reduce((sum, s) => sum + (s.totalRevenue || 0), 0);
-    const totalProfit = showsByYear.reduce((sum, s) => sum + (s.profit || 0), 0);
     const totalMerch = showsByYear.reduce((sum, s) => sum + (s.merchandiseSales || 0), 0);
     const totalFees = showsByYear.reduce((sum, s) => sum + (s.performanceFee || 0), 0);
     const totalExpenses = showsByYear.reduce((sum, s) => sum + (s.expenses || 0) + (s.materialsUsed || 0), 0);
-    const avgProfit = totalShows > 0 ? totalProfit / totalShows : 0;
+    const totalDayRateCost = showsByYear.reduce((sum, s) => sum + (s.dayRateCost || 0), 0);
     const daysWorked = calculateDaysWorked(showsByYear);
 
-    return { totalShows, totalRevenue, totalProfit, totalMerch, totalFees, totalExpenses, avgProfit, daysWorked };
-  }, [showsByYear]);
+    // Payroll share: spread annual payroll across show-days for this year
+    const payrollPerDay = daysWorked > 0 ? annualPayroll / daysWorked : 0;
+    const totalProfit = totalRevenue - totalExpenses - totalDayRateCost - annualPayroll;
+    const avgProfit = totalShows > 0 ? totalProfit / totalShows : 0;
+
+    return { totalShows, totalRevenue, totalProfit, totalMerch, totalFees, totalExpenses, totalDayRateCost, annualPayroll, avgProfit, daysWorked, payrollPerDay };
+  }, [showsByYear, annualPayroll]);
 
   // Calculate per-team metrics for SELECTED YEAR
   const yearlyTeamMetrics = useMemo(() => {
     const redTeam = showsByYear.filter(s => s.tour === 'Red Team');
     const blueTeam = showsByYear.filter(s => s.tour === 'Blue Team');
+    const totalDaysAllTeams = calculateDaysWorked(showsByYear);
 
     const calcTeamStats = (teamShows) => {
       const showCount = teamShows.length;
       const revenue = teamShows.reduce((sum, s) => sum + (s.totalRevenue || 0), 0);
-      const profit = teamShows.reduce((sum, s) => sum + (s.profit || 0), 0);
       const merch = teamShows.reduce((sum, s) => sum + (s.merchandiseSales || 0), 0);
+      const expenses = teamShows.reduce((sum, s) => sum + (s.expenses || 0) + (s.materialsUsed || 0), 0);
+      const dayRateCost = teamShows.reduce((sum, s) => sum + (s.dayRateCost || 0), 0);
       const daysWorked = calculateDaysWorked(teamShows);
+      // Proportional payroll share based on days worked
+      const payrollShare = totalDaysAllTeams > 0 ? annualPayroll * (daysWorked / totalDaysAllTeams) : 0;
+      const profit = revenue - expenses - dayRateCost - payrollShare;
       const avgPerShow = showCount > 0 ? profit / showCount : 0;
       const uniqueVenues = new Set(teamShows.map(s => s.venueId)).size;
       return { showCount, revenue, profit, merch, daysWorked, avgPerShow, uniqueVenues };
@@ -81,19 +106,25 @@ export default function Dashboard({ shows, contacts = [], venues = [], onNavigat
       red: calcTeamStats(redTeam),
       blue: calcTeamStats(blueTeam)
     };
-  }, [showsByYear]);
+  }, [showsByYear, annualPayroll]);
 
   // Calculate per-team metrics for ALL TIME
   const allTimeTeamMetrics = useMemo(() => {
     const redTeam = shows.filter(s => s.tour === 'Red Team');
     const blueTeam = shows.filter(s => s.tour === 'Blue Team');
+    const totalDaysAllTeams = calculateDaysWorked(shows);
+    const yearsSpanned = new Set(shows.map(s => new Date(s.startDate).getFullYear())).size || 1;
+    const totalPayroll = annualPayroll * yearsSpanned;
 
     const calcTeamStats = (teamShows) => {
       const showCount = teamShows.length;
       const revenue = teamShows.reduce((sum, s) => sum + (s.totalRevenue || 0), 0);
-      const profit = teamShows.reduce((sum, s) => sum + (s.profit || 0), 0);
       const merch = teamShows.reduce((sum, s) => sum + (s.merchandiseSales || 0), 0);
+      const expenses = teamShows.reduce((sum, s) => sum + (s.expenses || 0) + (s.materialsUsed || 0), 0);
+      const dayRateCost = teamShows.reduce((sum, s) => sum + (s.dayRateCost || 0), 0);
       const daysWorked = calculateDaysWorked(teamShows);
+      const payrollShare = totalDaysAllTeams > 0 ? totalPayroll * (daysWorked / totalDaysAllTeams) : 0;
+      const profit = revenue - expenses - dayRateCost - payrollShare;
       const avgPerShow = showCount > 0 ? profit / showCount : 0;
       const uniqueVenues = new Set(teamShows.map(s => s.venueId)).size;
       return { showCount, revenue, profit, merch, daysWorked, avgPerShow, uniqueVenues };
@@ -103,7 +134,7 @@ export default function Dashboard({ shows, contacts = [], venues = [], onNavigat
       red: calcTeamStats(redTeam),
       blue: calcTeamStats(blueTeam)
     };
-  }, [shows]);
+  }, [shows, annualPayroll]);
 
   // Format currency
   const formatCurrency = (value) => {
@@ -385,8 +416,26 @@ export default function Dashboard({ shows, contacts = [], venues = [], onNavigat
         <h3>{selectedYear} Costs Overview</h3>
         <div className="costs-row">
           <div className="cost-item">
-            <span className="cost-label">Total Expenses</span>
+            <span className="cost-label">Full-Time Payroll</span>
+            <span className="cost-value">{formatCurrency(annualPayroll)}</span>
+          </div>
+          <div className="cost-item">
+            <span className="cost-label">Day-Rate Labor</span>
+            <span className="cost-value">{formatCurrency(yearlyMetrics.totalDayRateCost)}</span>
+          </div>
+          <div className="cost-item">
+            <span className="cost-label">Materials & Expenses</span>
             <span className="cost-value">{formatCurrency(yearlyMetrics.totalExpenses)}</span>
+          </div>
+          <div className="cost-item">
+            <span className="cost-label">Total Costs</span>
+            <span className="cost-value">{formatCurrency(annualPayroll + yearlyMetrics.totalDayRateCost + yearlyMetrics.totalExpenses)}</span>
+          </div>
+        </div>
+        <div className="costs-row">
+          <div className="cost-item">
+            <span className="cost-label">Net Profit</span>
+            <span className="cost-value highlight">{formatCurrency(yearlyMetrics.totalProfit)}</span>
           </div>
           <div className="cost-item">
             <span className="cost-label">Profit Margin</span>

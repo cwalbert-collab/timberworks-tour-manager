@@ -91,16 +91,16 @@ export const sampleEmployees = [
     firstName: 'Cooper',
     lastName: 'Albert',
     photoUrl: getPlaceholderAvatar('Cooper', 'Albert', 'c62828'),
-    homeLocation: 'Hayward, WI',
+    homeLocation: 'Madison, WI',
     employmentType: 'full_time',
-    annualSalary: 55000,
+    annualSalary: 70000,
     dayRate: null,
     role: 'lead_performer',
     team: 'red',
     phone: '(715) 555-0101',
     email: 'cooper@timberworks.com',
     emergencyContact: {
-      name: 'Emergency Contact',
+      name: 'Carson Albert',
       phone: '(715) 555-0102',
       relationship: 'Family'
     },
@@ -118,26 +118,26 @@ export const sampleEmployees = [
       logrolling: true
     },
     skills: {
-      cdl: true,
+      cdl: false,
       admin_support: true,
       social_media: true,
       announcer: true,
       bear_carver: true
     },
     certifications: {
-      cdl_license: { certified: true, expirationDate: '2027-06-15' },
+      cdl_license: { certified: false, expirationDate: null },
       first_aid: { certified: true, expirationDate: '2026-08-20' },
       chainsaw_safety: { certified: true, expirationDate: '2027-01-01' }
     }
   },
   {
     id: 'emp-002',
-    firstName: 'Jake',
-    lastName: 'Timber',
-    photoUrl: getPlaceholderAvatar('Jake', 'Timber', '1565c0'),
+    firstName: 'Nick',
+    lastName: 'Shirley',
+    photoUrl: getPlaceholderAvatar('Nick', 'Shirley', '1565c0'),
     homeLocation: 'Hayward, WI',
     employmentType: 'full_time',
-    annualSalary: 48000,
+    annualSalary: 70000,
     dayRate: null,
     role: 'lead_performer',
     team: 'blue',
@@ -157,7 +157,7 @@ export const sampleEmployees = [
       springboard_chop: true,
       op_race: true,
       hot_saw: true,
-      carve_skit: false,
+      carve_skit: true,
       speed_climb: true,
       logrolling: true
     },
@@ -176,12 +176,12 @@ export const sampleEmployees = [
   },
   {
     id: 'emp-003',
-    firstName: 'Mike',
-    lastName: 'Sawyer',
-    photoUrl: getPlaceholderAvatar('Mike', 'Sawyer', 'c62828'),
+    firstName: 'Deven',
+    lastName: 'Blair',
+    photoUrl: getPlaceholderAvatar('Deven', 'Blair', 'c62828'),
     homeLocation: 'Cable, WI',
     employmentType: 'full_time',
-    annualSalary: 46000,
+    annualSalary: 70000,
     dayRate: null,
     role: 'performer',
     team: 'red',
@@ -200,7 +200,7 @@ export const sampleEmployees = [
       underhand_chop: true,
       springboard_chop: true,
       op_race: true,
-      hot_saw: false,
+      hot_saw: true,
       carve_skit: true,
       speed_climb: true,
       logrolling: true
@@ -210,7 +210,7 @@ export const sampleEmployees = [
       admin_support: false,
       social_media: false,
       announcer: false,
-      bear_carver: false
+      bear_carver: true
     },
     certifications: {
       cdl_license: { certified: false, expirationDate: null },
@@ -220,12 +220,12 @@ export const sampleEmployees = [
   },
   {
     id: 'emp-004',
-    firstName: 'Ben',
-    lastName: 'Oakley',
-    photoUrl: getPlaceholderAvatar('Ben', 'Oakley', '1565c0'),
+    firstName: 'Zachary',
+    lastName: 'Ray',
+    photoUrl: getPlaceholderAvatar('Zachary', 'Ray', '1565c0'),
     homeLocation: 'Spooner, WI',
     employmentType: 'full_time',
-    annualSalary: 45000,
+    annualSalary: 70000,
     dayRate: null,
     role: 'performer',
     team: 'blue',
@@ -244,20 +244,20 @@ export const sampleEmployees = [
       underhand_chop: true,
       springboard_chop: true,
       op_race: true,
-      hot_saw: false,
-      carve_skit: false,
+      hot_saw: true,
+      carve_skit: true,
       speed_climb: true,
       logrolling: true
     },
     skills: {
-      cdl: true,
+      cdl: false,
       admin_support: false,
       social_media: false,
       announcer: false,
-      bear_carver: false
+      bear_carver: true
     },
     certifications: {
-      cdl_license: { certified: true, expirationDate: '2027-03-22' },
+      cdl_license: { certified: false, expirationDate: null },
       first_aid: { certified: true, expirationDate: '2026-04-18' },
       chainsaw_safety: { certified: true, expirationDate: '2026-11-05' }
     }
@@ -266,12 +266,12 @@ export const sampleEmployees = [
   // ========== FULL-TIME SALARIED: 2 ANNOUNCERS ==========
   {
     id: 'emp-005',
-    firstName: 'Rachel',
-    lastName: 'Pine',
-    photoUrl: getPlaceholderAvatar('Rachel', 'Pine', '7b1fa2'),
+    firstName: 'Dave',
+    lastName: 'Weatherhead',
+    photoUrl: getPlaceholderAvatar('Dave', 'Weatherhead', '757575'),
     homeLocation: 'Hayward, WI',
     employmentType: 'full_time',
-    annualSalary: 44000,
+    annualSalary: 70000,
     dayRate: null,
     role: 'announcer',
     team: 'flex',
@@ -286,36 +286,36 @@ export const sampleEmployees = [
     isActive: true,
     notes: 'Primary show announcer. Energetic crowd engagement. Also manages social media.',
     events: {
-      single_buck: false,
-      underhand_chop: false,
-      springboard_chop: false,
-      op_race: false,
-      hot_saw: false,
+      single_buck: true,
+      underhand_chop: true,
+      springboard_chop: true,
+      op_race: true,
+      hot_saw: true,
       carve_skit: true,
-      speed_climb: false,
-      logrolling: false
+      speed_climb: true,
+      logrolling: true
     },
     skills: {
-      cdl: false,
+      cdl: true,
       admin_support: true,
-      social_media: true,
+      social_media: false,
       announcer: true,
-      bear_carver: false
+      bear_carver: true
     },
     certifications: {
-      cdl_license: { certified: false, expirationDate: null },
+      cdl_license: { certified: true, expirationDate: '2027-03-22' },
       first_aid: { certified: true, expirationDate: '2026-10-30' },
-      chainsaw_safety: { certified: false, expirationDate: null }
+      chainsaw_safety: { certified: true, expirationDate: null }
     }
   },
   {
     id: 'emp-006',
-    firstName: 'Tom',
-    lastName: 'Birch',
-    photoUrl: getPlaceholderAvatar('Tom', 'Birch', '7b1fa2'),
+    firstName: 'Sam',
+    lastName: 'Benish',
+    photoUrl: getPlaceholderAvatar('Sam', 'Benish', '757575'),
     homeLocation: 'Rice Lake, WI',
     employmentType: 'full_time',
-    annualSalary: 42000,
+    annualSalary: 70000,
     dayRate: null,
     role: 'announcer',
     team: 'flex',
@@ -340,14 +340,14 @@ export const sampleEmployees = [
       logrolling: false
     },
     skills: {
-      cdl: true,
+      cdl: false,
       admin_support: false,
-      social_media: false,
+      social_media: true,
       announcer: true,
       bear_carver: false
     },
     certifications: {
-      cdl_license: { certified: true, expirationDate: '2027-08-15' },
+      cdl_license: { certified: false, expirationDate: null },
       first_aid: { certified: true, expirationDate: '2026-06-20' },
       chainsaw_safety: { certified: false, expirationDate: null }
     }
@@ -356,12 +356,12 @@ export const sampleEmployees = [
   // ========== FULL-TIME SALARIED: 2 ADMIN WORKERS ==========
   {
     id: 'emp-007',
-    firstName: 'Lisa',
-    lastName: 'Maple',
-    photoUrl: getPlaceholderAvatar('Lisa', 'Maple', '2e7d32'),
+    firstName: 'Suzanne',
+    lastName: 'Jones',
+    photoUrl: getPlaceholderAvatar('Suzanne', 'Jones', 'f9a825'),
     homeLocation: 'Hayward, WI',
     employmentType: 'full_time',
-    annualSalary: 48000,
+    annualSalary: 70000,
     dayRate: null,
     role: 'admin',
     team: 'flex',
@@ -388,7 +388,7 @@ export const sampleEmployees = [
     skills: {
       cdl: false,
       admin_support: true,
-      social_media: true,
+      social_media: false,
       announcer: false,
       bear_carver: false
     },
@@ -400,12 +400,12 @@ export const sampleEmployees = [
   },
   {
     id: 'emp-008',
-    firstName: 'Amy',
-    lastName: 'Willow',
-    photoUrl: getPlaceholderAvatar('Amy', 'Willow', '2e7d32'),
+    firstName: 'Samantha',
+    lastName: 'LaSelle',
+    photoUrl: getPlaceholderAvatar('Samantha', 'LaSelle', 'f9a825'),
     homeLocation: 'Hayward, WI',
     employmentType: 'full_time',
-    annualSalary: 40000,
+    annualSalary: 70000,
     dayRate: null,
     role: 'admin',
     team: 'flex',
@@ -433,7 +433,7 @@ export const sampleEmployees = [
       cdl: false,
       admin_support: true,
       social_media: true,
-      announcer: false,
+      announcer: true,
       bear_carver: false
     },
     certifications: {
@@ -446,10 +446,10 @@ export const sampleEmployees = [
   // ========== DAY-RATE TEMPS: FILL-IN LUMBERJACKS ==========
   {
     id: 'emp-009',
-    firstName: 'Chris',
-    lastName: 'Hemlock',
-    photoUrl: getPlaceholderAvatar('Chris', 'Hemlock', 'ff9800'),
-    homeLocation: 'Duluth, MN',
+    firstName: 'Robert',
+    lastName: 'Eggar',
+    photoUrl: getPlaceholderAvatar('Robert', 'Eggar', '4caf50'),
+    homeLocation: 'Madison, WI',
     employmentType: 'day_rate',
     annualSalary: null,
     dayRate: 250,
@@ -464,7 +464,7 @@ export const sampleEmployees = [
     },
     startDate: '2022-06-15',
     isActive: true,
-    notes: 'Seasonal performer. Available May-September. Strong in springboard.',
+    notes: 'College student - available summer and weekends. Excellent logroller - state champion.',
     events: {
       single_buck: true,
       underhand_chop: true,
@@ -477,9 +477,9 @@ export const sampleEmployees = [
     },
     skills: {
       cdl: false,
-      admin_support: false,
-      social_media: false,
-      announcer: false,
+      admin_support: true,
+      social_media: true,
+      announcer: true,
       bear_carver: false
     },
     certifications: {
@@ -490,13 +490,13 @@ export const sampleEmployees = [
   },
   {
     id: 'emp-010',
-    firstName: 'Dan',
-    lastName: 'Spruce',
-    photoUrl: getPlaceholderAvatar('Dan', 'Spruce', 'ff9800'),
-    homeLocation: 'Ashland, WI',
+    firstName: 'Grant',
+    lastName: 'Papp',
+    photoUrl: getPlaceholderAvatar('Grant', 'Papp', '4caf50'),
+    homeLocation: 'Hayward, WI',
     employmentType: 'day_rate',
     annualSalary: null,
-    dayRate: 225,
+    dayRate: 200,
     role: 'performer',
     team: 'flex',
     phone: '(715) 555-1001',
@@ -507,7 +507,7 @@ export const sampleEmployees = [
       relationship: 'Wife'
     },
     startDate: '2021-07-20',
-    isActive: true,
+    isActive: false,
     notes: 'Reliable fill-in. Good all-around performer.',
     events: {
       single_buck: true,
@@ -529,18 +529,18 @@ export const sampleEmployees = [
     certifications: {
       cdl_license: { certified: false, expirationDate: null },
       first_aid: { certified: true, expirationDate: '2026-11-20' },
-      chainsaw_safety: { certified: true, expirationDate: '2026-10-15' }
+      chainsaw_safety: { certified: false, expirationDate: '2026-10-15' }
     }
   },
   {
     id: 'emp-011',
-    firstName: 'Kevin',
-    lastName: 'Aspen',
-    photoUrl: getPlaceholderAvatar('Kevin', 'Aspen', 'ff9800'),
-    homeLocation: 'Superior, WI',
+    firstName: 'Birk',
+    lastName: 'Lee',
+    photoUrl: getPlaceholderAvatar('Birk', 'Lee', '4caf50'),
+    homeLocation: 'Hayward, WI',
     employmentType: 'day_rate',
     annualSalary: null,
-    dayRate: 300,
+    dayRate: 200,
     role: 'performer',
     team: 'flex',
     phone: '(715) 555-1101',
@@ -568,26 +568,24 @@ export const sampleEmployees = [
       admin_support: false,
       social_media: false,
       announcer: false,
-      bear_carver: true
+      bear_carver: false
     },
     certifications: {
       cdl_license: { certified: false, expirationDate: null },
       first_aid: { certified: true, expirationDate: '2026-05-05' },
-      chainsaw_safety: { certified: true, expirationDate: '2027-02-28' }
+      chainsaw_safety: { certified: false, expirationDate: '2027-02-28' }
     }
   },
-
-  // ========== DAY-RATE TEMPS: LUMBERJILLS (mainly logrolling) ==========
   {
     id: 'emp-012',
-    firstName: 'Sarah',
-    lastName: 'Cedar',
-    photoUrl: getPlaceholderAvatar('Sarah', 'Cedar', 'e91e63'),
-    homeLocation: 'Eau Claire, WI',
+    firstName: 'Zachary',
+    lastName: 'Tom',
+    photoUrl: getPlaceholderAvatar('Zachary', 'Tom', '4caf50'),
+    homeLocation: 'Spooner, WI',
     employmentType: 'day_rate',
     annualSalary: null,
-    dayRate: 275,
-    role: 'lumberjill',
+    dayRate: 200,
+    role: 'performer',
     team: 'flex',
     phone: '(715) 555-1201',
     email: 'sarah.cedar@yahoo.com',
@@ -597,14 +595,14 @@ export const sampleEmployees = [
       relationship: 'Father'
     },
     startDate: '2023-05-01',
-    isActive: true,
+    isActive: false,
     notes: 'College student - available summer and weekends. Excellent logroller - state champion.',
     events: {
       single_buck: true,
-      underhand_chop: false,
-      springboard_chop: false,
+      underhand_chop: true,
+      springboard_chop: true,
       op_race: true,
-      hot_saw: false,
+      hot_saw: true,
       carve_skit: true,
       speed_climb: false,
       logrolling: true
@@ -612,26 +610,26 @@ export const sampleEmployees = [
     skills: {
       cdl: false,
       admin_support: false,
-      social_media: true,
+      social_media: false,
       announcer: false,
-      bear_carver: false
+      bear_carver: true
     },
     certifications: {
       cdl_license: { certified: false, expirationDate: null },
       first_aid: { certified: true, expirationDate: '2027-01-15' },
-      chainsaw_safety: { certified: true, expirationDate: '2026-06-30' }
+      chainsaw_safety: { certified: false, expirationDate: '2026-06-30' }
     }
   },
   {
     id: 'emp-013',
-    firstName: 'Emma',
-    lastName: 'Axelrod',
-    photoUrl: getPlaceholderAvatar('Emma', 'Axelrod', 'e91e63'),
-    homeLocation: 'Minneapolis, MN',
+    firstName: 'Matt',
+    lastName: 'Minocqua',
+    photoUrl: getPlaceholderAvatar('Matt', 'Minocqua', '4caf50'),
+    homeLocation: 'Milwaukee, WI',
     employmentType: 'day_rate',
     annualSalary: null,
-    dayRate: 275,
-    role: 'lumberjill',
+    dayRate: 200,
+    role: 'performer',
     team: 'flex',
     phone: '(612) 555-1301',
     email: 'emma.axelrod@gmail.com',
@@ -641,22 +639,22 @@ export const sampleEmployees = [
       relationship: 'Brother'
     },
     startDate: '2022-06-01',
-    isActive: true,
+    isActive: false,
     notes: 'Former competitive logroller. Great for larger state fair shows.',
     events: {
-      single_buck: false,
-      underhand_chop: false,
-      springboard_chop: false,
+      single_buck: true,
+      underhand_chop: true,
+      springboard_chop: true,
       op_race: true,
-      hot_saw: false,
+      hot_saw: true,
       carve_skit: true,
-      speed_climb: false,
+      speed_climb: true,
       logrolling: true
     },
     skills: {
       cdl: false,
       admin_support: false,
-      social_media: true,
+      social_media: false,
       announcer: false,
       bear_carver: false
     },
@@ -666,15 +664,17 @@ export const sampleEmployees = [
       chainsaw_safety: { certified: false, expirationDate: null }
     }
   },
+
+  // ========== DAY-RATE TEMPS: LUMBERJILL ==========
   {
     id: 'emp-014',
-    firstName: 'Jess',
-    lastName: 'Redwood',
-    photoUrl: getPlaceholderAvatar('Jess', 'Redwood', 'e91e63'),
+    firstName: 'Livvy',
+    lastName: 'Pappadapolous',
+    photoUrl: getPlaceholderAvatar('Livvy', 'Pappadapolous', 'e91e63'),
     homeLocation: 'Wausau, WI',
     employmentType: 'day_rate',
     annualSalary: null,
-    dayRate: 250,
+    dayRate: 200,
     role: 'lumberjill',
     team: 'flex',
     phone: '(715) 555-1401',
@@ -692,7 +692,7 @@ export const sampleEmployees = [
       underhand_chop: false,
       springboard_chop: false,
       op_race: true,
-      hot_saw: false,
+      hot_saw: true,
       carve_skit: false,
       speed_climb: false,
       logrolling: true
@@ -700,7 +700,7 @@ export const sampleEmployees = [
     skills: {
       cdl: false,
       admin_support: false,
-      social_media: false,
+      social_media: true,
       announcer: false,
       bear_carver: false
     },

@@ -239,26 +239,33 @@ export function formatDateRange(startDate, endDate) {
   return `${start.toLocaleDateString('en-US', options)} - ${end.toLocaleDateString('en-US', options)}`;
 }
 
+// Default standard day rate (per person per day)
+export const STANDARD_DAY_RATE = 200;
+
 // Calculate derived metrics for a show
 export function calculateShowMetrics(show) {
   const start = new Date(show.startDate);
   const end = new Date(show.endDate || show.startDate);
   const durationDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
 
+  const dayRateCount = show.dayRateCount || 0;
+  const dayRateCost = dayRateCount * STANDARD_DAY_RATE * durationDays;
+
   const totalRevenue = (show.performanceFee || 0) + (show.merchandiseSales || 0);
   const totalExpenses = (show.materialsUsed || 0) + (show.expenses || 0);
-  const profit = totalRevenue - totalExpenses;
+  const profit = totalRevenue - totalExpenses - dayRateCost;
 
   return {
     ...show,
     durationDays,
+    dayRateCost,
     totalRevenue,
     profit
   };
 }
 
 // Helper to create a show object
-function createShow(id, tour, venueId, startDate, endDate, fee, merch, materials, expenses, notes, status = 'completed') {
+function createShow(id, tour, venueId, startDate, endDate, fee, merch, materials, expenses, notes, status = 'completed', dayRateCount = 0) {
   const venue = VENUES[venueId] || VENUES['venue-001'];
   return {
     id,
@@ -283,7 +290,8 @@ function createShow(id, tour, venueId, startDate, endDate, fee, merch, materials
     contactPhone: venue.phone,
     contactEmail: venue.email,
     notes,
-    status
+    status,
+    dayRateCount
   };
 }
 

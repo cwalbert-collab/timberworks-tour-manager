@@ -31,7 +31,7 @@ export function useShows() {
   useEffect(() => {
     if (isLoaded) {
       // Store without calculated fields to save space
-      const toStore = shows.map(({ totalRevenue, profit, durationDays, ...rest }) => rest);
+      const toStore = shows.map(({ totalRevenue, profit, durationDays, dayRateCost, ...rest }) => rest);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
     }
   }, [shows, isLoaded]);

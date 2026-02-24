@@ -15,6 +15,7 @@ const emptyShow = {
   merchandiseSales: '',
   materialsUsed: '',
   expenses: '',
+  dayRateCount: 0,
   notes: ''
 };
 
@@ -97,7 +98,8 @@ export default function ShowForm({
         performanceFee: show.performanceFee || '',
         merchandiseSales: show.merchandiseSales || '',
         materialsUsed: show.materialsUsed || '',
-        expenses: show.expenses || ''
+        expenses: show.expenses || '',
+        dayRateCount: show.dayRateCount || 0
       });
       setVenueMode('select');
       setContactMode('select');
@@ -279,7 +281,8 @@ export default function ShowForm({
       performanceFee: parseFloat(formData.performanceFee) || 0,
       merchandiseSales: parseFloat(formData.merchandiseSales) || 0,
       materialsUsed: parseFloat(formData.materialsUsed) || 0,
-      expenses: parseFloat(formData.expenses) || 0
+      expenses: parseFloat(formData.expenses) || 0,
+      dayRateCount: parseInt(formData.dayRateCount) || 0
     };
 
     // Update employee assignments
@@ -682,7 +685,18 @@ export default function ShowForm({
           {/* Financials */}
           <div className="form-section">
             <h3>Financials</h3>
-            <div className="form-row three-col">
+            <div className="form-row two-col">
+              <label className="form-field">
+                <span>Day Raters Needed</span>
+                <select name="dayRateCount" value={formData.dayRateCount} onChange={handleChange}>
+                  <option value={0}>0 - None</option>
+                  <option value={1}>1</option>
+                  <option value={2}>2</option>
+                  <option value={3}>3</option>
+                  <option value={4}>4</option>
+                </select>
+                <span className="field-hint">$200/person/day</span>
+              </label>
               <label className="form-field">
                 <span>Merchandise Sales</span>
                 <input
@@ -695,6 +709,8 @@ export default function ShowForm({
                   placeholder="0.00"
                 />
               </label>
+            </div>
+            <div className="form-row two-col">
               <label className="form-field">
                 <span>Materials Used</span>
                 <input

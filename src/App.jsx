@@ -373,6 +373,7 @@ function App() {
             shows={shows}
             contacts={contacts}
             venues={venues}
+            employees={employees}
             onNavigateToRevenue={() => setActiveTab('revenue')}
             onNavigateToContact={(contactId) => handleNavigateToDirectory('contact', contactId)}
           />
