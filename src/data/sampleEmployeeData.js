@@ -19,11 +19,38 @@ export const EMPLOYEE_ROLES = [
   { value: 'lead_performer', label: 'Lead Performer' },
   { value: 'lumberjill', label: 'Lumberjill' },
   { value: 'crew', label: 'Crew' },
-  { value: 'driver', label: 'Driver' },
   { value: 'announcer', label: 'Announcer' },
-  { value: 'manager', label: 'Manager' },
   { value: 'admin', label: 'Administrative' }
 ];
+
+/**
+ * Get the display color for an employee based on their role and employment type.
+ * Priority:
+ *   - Lumberjill → Pink (#e91e63)
+ *   - Announcer → Gray (#757575)
+ *   - Admin/Crew → Yellow (#f9a825)
+ *   - Performer/Lead Performer (full-time) → Red (#c62828) or Blue (#1565c0) by team
+ *   - Performer/Lead Performer (day-rate) → Green (#4caf50)
+ *   - Any other day-rate → Green (#4caf50)
+ */
+export function getRoleColor(employee) {
+  switch (employee.role) {
+    case 'lumberjill':
+      return '#e91e63';
+    case 'announcer':
+      return '#757575';
+    case 'admin':
+    case 'crew':
+      return '#f9a825';
+    case 'performer':
+    case 'lead_performer':
+      if (employee.employmentType === 'day_rate') return '#4caf50';
+      return employee.team === 'red' ? '#c62828' : '#1565c0';
+    default:
+      if (employee.employmentType === 'day_rate') return '#4caf50';
+      return '#757575';
+  }
+}
 
 // Lumberjack competition events - binary can/cannot perform
 export const PERFORMANCE_EVENTS = [
@@ -336,7 +363,7 @@ export const sampleEmployees = [
     employmentType: 'full_time',
     annualSalary: 48000,
     dayRate: null,
-    role: 'manager',
+    role: 'admin',
     team: 'flex',
     phone: '(715) 555-0701',
     email: 'lisa@timberworks.com',

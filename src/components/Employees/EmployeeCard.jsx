@@ -5,7 +5,8 @@ import {
   CERTIFICATION_TYPES,
   EMPLOYMENT_TYPES,
   TEAM_ASSIGNMENTS,
-  EMPLOYEE_ROLES
+  EMPLOYEE_ROLES,
+  getRoleColor
 } from '../../data/sampleEmployeeData';
 import './EmployeeCard.css';
 
@@ -66,9 +67,9 @@ const EmployeeCard = forwardRef(function EmployeeCard({
           </span>
           <span
             className="team-badge"
-            style={{ backgroundColor: team?.color || '#757575' }}
+            style={{ backgroundColor: getRoleColor(employee) }}
           >
-            {team?.label || employee.team}
+            {role?.label || employee.role}
           </span>
         </div>
 

@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 import {
   PERFORMANCE_EVENTS,
   OTHER_SKILLS,
-  TEAM_ASSIGNMENTS
+  TEAM_ASSIGNMENTS,
+  getRoleColor
 } from '../../data/sampleEmployeeData';
 import './SkillsMatrix.css';
 
@@ -26,11 +27,6 @@ export default function SkillsMatrix({ employees }) {
 
     return { events: eventCounts, skills: skillCounts };
   }, [employees]);
-
-  const getTeamColor = (team) => {
-    const t = TEAM_ASSIGNMENTS.find(ta => ta.value === team);
-    return t?.color || '#757575';
-  };
 
   // Identify gaps (events with only 1 or 0 people)
   const eventGaps = PERFORMANCE_EVENTS.filter(e => coverage.events[e.id] <= 1);
@@ -80,7 +76,7 @@ export default function SkillsMatrix({ employees }) {
                     <div className="employee-name-cell">
                       <span
                         className="team-dot"
-                        style={{ backgroundColor: getTeamColor(emp.team) }}
+                        style={{ backgroundColor: getRoleColor(emp) }}
                       />
                       <span className="emp-name">{emp.firstName} {emp.lastName}</span>
                       <span className="emp-role">{emp.role}</span>
@@ -126,7 +122,7 @@ export default function SkillsMatrix({ employees }) {
                     <div className="employee-name-cell">
                       <span
                         className="team-dot"
-                        style={{ backgroundColor: getTeamColor(emp.team) }}
+                        style={{ backgroundColor: getRoleColor(emp) }}
                       />
                       <span className="emp-name">{emp.firstName} {emp.lastName}</span>
                     </div>

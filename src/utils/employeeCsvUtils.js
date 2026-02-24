@@ -277,11 +277,10 @@ function mapRowToEmployee(row, index) {
     'lead_performer': 'lead_performer',
     'lumberjill': 'lumberjill',
     'crew': 'crew',
-    'driver': 'driver',
     'announcer': 'announcer',
-    'manager': 'manager',
     'admin': 'admin',
-    'administrative': 'admin'
+    'administrative': 'admin',
+    'manager': 'admin'
   };
   role = roleMap[role] || 'crew';
 
